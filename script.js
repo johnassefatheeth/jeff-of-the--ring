@@ -90,21 +90,26 @@ function init() {
 
     // Initialize OrbitControls
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.autoRotate = true; // Enable auto-rotation
-    controls.autoRotateSpeed = 7; // Set the rotation speed (lower is slower)
-
+    controls.autoRotate = true; 
+    controls.autoRotateSpeed = 7; 
     // Ring setup
-    const ringGeometry = createRingGeometry('round'); // Default to round
+    const ringGeometry = createRingGeometry('round'); 
     const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.9, roughness: 0.1 });
     ring = new THREE.Mesh(ringGeometry, ringMaterial);
     scene.add(ring);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Reduced intensity
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2); 
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(0, 5, 0);
     scene.add(directionalLight);
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 3);
+    directionalLight2.position.set(0, 0, 5);
+    scene.add(directionalLight2);
+    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 3);
+    directionalLight3.position.set(0, 0, -5);
+    scene.add(directionalLight3);
 
     // Price display
     const priceDisplay = document.createElement('div');
@@ -160,7 +165,7 @@ function createRingGeometry(style, squareness = 1, thickness = 0.2) {
     if (style === 'square') {
         const outerRadius = 0.9;
         const innerRadius = 0.7;
-        const segments = 256;
+        const segments = 512;
 
         const shape = new THREE.Shape();
 
@@ -260,7 +265,7 @@ function updateRing() {
         'three_stone': 3
     }[centerStone];
 
-    const diamondSpacing = 0.3; // Space between diamonds
+    const diamondSpacing = 0.5; // Space between diamonds
     const ringRadius = 0.8; // Radius of the ring
     const diamondBaseHeight = 1.15; // Base height for the diamonds
 
@@ -271,11 +276,28 @@ function updateRing() {
 
         loader.load('scene.gltf', function (gltf) {
             gltf.scene.scale.set(0.0004, 0.0004, 0.0004);
-            gltf.scene.position.set(x, y, z);
+            if (diamondCount === 1) {
+                gltf.scene.position.set(x, y, z);}
+                else if (diamondCount === 2) {
+                    gltf.scene.position.set(x, y-0.04, z);}
+                    else if (diamondCount === 3) {
+                        if(i === 0) {
+                            gltf.scene.position.set(x, y-0.2, z);
+                            // gltf.scene.rotation.x = -35;
+                            const angle = Math.atan2(y, ringRadius); // Calculate the angle to align the diamond perpendicularly
+                            gltf.scene.rotation.z = 90; // Rotate the diamond to align with the ring
+                        }
+                        else if(i === 1) {
+                            gltf.scene.position.set(x, y, z);
+                        }
+                        else if(i === 2) {
+                            gltf.scene.position.set(x, y-0.2, z);
+                        }
+                    }
+            // gltf.scene.position.set(x, y, z);
 
             // Rotate the diamond to align with the ring's surface
-            const angle = Math.atan2(y, ringRadius); // Calculate the angle to align the diamond perpendicularly
-            gltf.scene.rotation.y = -angle; // Rotate the diamond to align with the ring
+            
 
             diamonds.push(gltf.scene);
             scene.add(gltf.scene);
@@ -320,6 +342,6 @@ function onWindowResize() {
 
 function animate() {
     requestAnimationFrame(animate);
-    controls.update(); // Update the controls to enable auto-rotation
+    controls.update(); 
     renderer.render(scene, camera);
 }
