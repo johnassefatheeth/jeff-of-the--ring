@@ -1,4 +1,5 @@
-let scene, camera, renderer, ring;
+let scene, camera, renderer, ring, diamonds = [];
+let controls; // Declare controls globally
 
 // Base prices for customization options
 const prices = {
@@ -87,33 +88,22 @@ function init() {
     renderer.setSize(ringContainer.clientWidth, ringContainer.clientHeight);
     ringContainer.appendChild(renderer.domElement);
 
-
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    // Initialize OrbitControls
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.autoRotate = true; // Enable auto-rotation
+    controls.autoRotateSpeed = 7; // Set the rotation speed (lower is slower)
 
     // Ring setup
-    const ringGeometry = new THREE.TorusGeometry(0.8, 0.1, 16, 100, Math.PI * 2);
-    const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.7, roughness: 0.3 });
+    const ringGeometry = createRingGeometry('round'); // Default to round
+    const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.9, roughness: 0.1 });
     ring = new THREE.Mesh(ringGeometry, ringMaterial);
     scene.add(ring);
 
-    //adding diamond
-
-    const loader = new THREE.GLTFLoader();
-
-        loader.load('scene.gltf', function (gltf) {
-            gltf.scene.scale.set(0.0004, 0.0004, 0.0004);
-            gltf.scene.position.set(0, 1.15, 0);
-            scene.add(gltf.scene);
-        }, undefined, function (error) {
-            console.error(error);
-        });
-
-
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Reduced intensity
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 5, 5);
+    directionalLight.position.set(0, 5, 0);
     scene.add(directionalLight);
 
     // Price display
@@ -166,6 +156,61 @@ function init() {
     updateRing();
 }
 
+function createRingGeometry(style, squareness = 1, thickness = 0.2) {
+    if (style === 'square') {
+        const outerRadius = 0.9;
+        const innerRadius = 0.7;
+        const segments = 256;
+
+        const shape = new THREE.Shape();
+
+        for (let i = 0; i <= segments; i++) {
+            const angle = (i / segments) * Math.PI * 2;
+            let radius = outerRadius;
+
+            if (squareness !== 1.0) {
+                const absAngle = Math.abs(angle % (Math.PI / 2));
+                radius = outerRadius * (1 - squareness * Math.sin(absAngle));
+            }
+
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+
+            if (i === 0) {
+                shape.moveTo(x, y);
+            } else {
+                shape.lineTo(x, y);
+            }
+        }
+
+        const hole = new THREE.Path();
+        for (let i = 0; i <= segments; i++) {
+            const angle = (i / segments) * Math.PI * 2;
+            let radius = innerRadius;
+
+            if (squareness !== 1.0) {
+                const absAngle = Math.abs(angle % (Math.PI / 2));
+                radius = innerRadius * (1 - squareness * Math.sin(absAngle));
+            }
+
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+
+            if (i === 0) {
+                hole.moveTo(x, y);
+            } else {
+                hole.lineTo(x, y);
+            }
+        }
+
+        shape.holes.push(hole);
+
+        return new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false }); // Use thickness here
+    } else {
+        return new THREE.TorusGeometry(0.8, 0.1, 16, 100, Math.PI * 2);
+    }
+}
+
 function updateRing() {
     const metal = document.getElementById('metal').value;
     const centerStone = document.getElementById('center_stone').value;
@@ -193,6 +238,51 @@ function updateRing() {
         'mixed': 0xcccccc
     };
     ring.material.color.set(metalColors[metal]);
+
+    // Update ring geometry based on band style
+    ring.geometry.dispose(); // Dispose of the old geometry
+    ring.geometry = createRingGeometry(bandStyle);
+    if (bandStyle === 'square') {
+        ring.position.z = -0.1; // Adjust the ring position for square style
+    } else {
+        ring.position.z = 0; // Adjust the ring position for round
+    }
+
+    // Update diamonds based on center stone selection
+    const loader = new THREE.GLTFLoader();
+    diamonds.forEach(diamond => scene.remove(diamond));
+    diamonds = [];
+
+    const diamondCount = {
+        'one_stone_solitaire': 1,
+        'one_stone': 1,
+        'two_stone': 2,
+        'three_stone': 3
+    }[centerStone];
+
+    const diamondSpacing = 0.3; // Space between diamonds
+    const ringRadius = 0.8; // Radius of the ring
+    const diamondBaseHeight = 1.15; // Base height for the diamonds
+
+    for (let i = 0; i < diamondCount; i++) {
+        const x = (i - (diamondCount - 1) / 2) * diamondSpacing; // Position diamonds side by side
+        const y = diamondBaseHeight; // Height of the diamonds
+        const z = 0; // Diamonds are on top of the ring
+
+        loader.load('scene.gltf', function (gltf) {
+            gltf.scene.scale.set(0.0004, 0.0004, 0.0004);
+            gltf.scene.position.set(x, y, z);
+
+            // Rotate the diamond to align with the ring's surface
+            const angle = Math.atan2(y, ringRadius); // Calculate the angle to align the diamond perpendicularly
+            gltf.scene.rotation.y = -angle; // Rotate the diamond to align with the ring
+
+            diamonds.push(gltf.scene);
+            scene.add(gltf.scene);
+        }, undefined, function (error) {
+            console.error(error);
+        });
+    }
 
     // Calculate total price
     const totalPrice =
@@ -230,6 +320,6 @@ function onWindowResize() {
 
 function animate() {
     requestAnimationFrame(animate);
-    ring.rotation.y += 0.005; // Slow horizontal rotation
+    controls.update(); // Update the controls to enable auto-rotation
     renderer.render(scene, camera);
 }
