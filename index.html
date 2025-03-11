@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Ring Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="sidebar">
+        <h2>Ring Builder</h2>
+        <div id="price"></div>
+
+        <!-- Metal -->
+        <div class="dropdown">
+            <label for="metal">Metal:</label>
+            <select id="metal">
+                <option value="14k_yellow_gold">14K Yellow Gold</option>
+                <option value="14k_white">14K White</option>
+                <option value="14k_yellow">14K Yellow</option>
+                <option value="14k_rose">14K Rose</option>
+                <option value="18k_white">18K White</option>
+                <option value="18k_yellow">18K Yellow</option>
+                <option value="18k_rose">18K Rose</option>
+                <option value="platinum">Platinum</option>
+                <option value="mixed">Mixed</option>
+            </select>
+        </div>
+
+        <!-- Center Stone -->
+        <div class="dropdown">
+            <label for="center_stone">Center Stone:</label>
+            <select id="center_stone">
+                <option value="one_stone_solitaire">One Stone Ring (Solitaire)</option>
+                <option value="one_stone">One Stone</option>
+                <option value="two_stone">Two Stone</option>
+                <option value="three_stone">Three Stone</option>
+            </select>
+        </div>
+
+        <!-- Diamond Type -->
+        <div class="dropdown">
+            <label for="diamond_type">Diamond Type:</label>
+            <select id="diamond_type">
+                <option value="natural">Natural</option>
+                <option value="lab_grown">Lab Grown</option>
+                <option value="skip">Skip</option>
+            </select>
+        </div>
+
+        <!-- Basket & Halo -->
+        <div class="dropdown">
+            <label for="basket_halo">Basket & Halo:</label>
+            <select id="basket_halo">
+                <option value="none">None</option>
+                <option value="basket">Basket</option>
+                <option value="halo">Halo</option>
+                <option value="bezel">Bezel</option>
+                <option value="hidden_halo">Hidden Halo</option>
+            </select>
+        </div>
+
+        <!-- Prong Count -->
+        <div class="dropdown">
+            <label for="prong_count">Prong Count:</label>
+            <select id="prong_count">
+                <option value="4_classic">4 Prong Classic Setting</option>
+                <option value="4_compass">4 Compass</option>
+            </select>
+        </div>
+
+        <!-- Prong Tips -->
+        <div class="dropdown">
+            <label for="prong_tips">Prong Tips:</label>
+            <select id="prong_tips">
+                <option value="rounded">Rounded</option>
+                <option value="claw">Claw</option>
+                <option value="petite_claw">Petite Claw</option>
+                <option value="tab">Tab</option>
+            </select>
+        </div>
+
+        <!-- Prong Pave -->
+        <div class="dropdown">
+            <label for="prong_pave">Prong Pave:</label>
+            <select id="prong_pave">
+                <option value="none">None</option>
+                <option value="pave">Pave</option>
+            </select>
+        </div>
+
+        <!-- Band Style -->
+        <div class="dropdown">
+            <label for="band_style">Band Style:</label>
+            <select id="band_style">
+                <option value="round">Round</option>
+                <option value="square">Square</option>
+            </select>
+        </div>
+
+        <!-- Cathedral -->
+        <div class="dropdown">
+            <label for="cathedral">Cathedral:</label>
+            <select id="cathedral">
+                <option value="none">None</option>
+                <option value="cathedral">Cathedral</option>
+            </select>
+        </div>
+
+        <!-- Pave Style -->
+        <div class="dropdown">
+            <label for="pave_style">Pave Style:</label>
+            <select id="pave_style">
+                <option value="none">None</option>
+                <option value="petite_french">Petite French</option>
+            </select>
+        </div>
+
+        <!-- Band Width -->
+        <div class="dropdown">
+            <label for="band_width">Band Width:</label>
+            <select id="band_width">
+                <option value="1.7">1.7</option>
+                <option value="1.54">1.54</option>
+            </select>
+        </div>
+
+        <!-- Engraving -->
+        <div class="dropdown">
+            <label for="engraving">Engraving:</label>
+            <select id="engraving">
+                <option value="none">None</option>
+                <option value="block">Block</option>
+                <option value="cursive">Cursive</option>
+                <option value="surprise_stones">Surprise Stones</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="ring-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

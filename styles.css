@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+}
+
+#sidebar {
+    width: 250px; /* Fixed width for the sidebar */
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Prevent the sidebar from shrinking */
+}
+
+#sidebar h2 {
+    margin-top: 0;
+}
+
+.dropdown {
+    margin-bottom: 20px;
+}
+
+.dropdown label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.dropdown select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#ring-container {
+    flex-grow: 1; /* Take up remaining space */
+    background-color: #fff;
+    position: relative; /* Ensure the renderer is positioned correctly */
+}
