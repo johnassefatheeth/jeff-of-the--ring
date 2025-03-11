@@ -93,6 +93,20 @@ function init() {
     ring = new THREE.Mesh(ringGeometry, ringMaterial);
     scene.add(ring);
 
+    const loader = new GLTFLoader();
+    loader.load('path/to/your/model.glb', function (gltf) {
+        const model = gltf.scene;
+
+        // Position the model at the top of the ring
+        model.position.set(0, 0.9, 0); // Adjust these values as needed
+        model.scale.set(0.1, 0.1, 0.1); // Scale the model if necessary
+
+        // Add the model to the scene
+        scene.add(model);
+    }, undefined, function (error) {
+        console.error('An error happened while loading the GLB model:', error);
+    });
+
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
