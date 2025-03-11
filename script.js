@@ -87,28 +87,30 @@ function init() {
     renderer.setSize(ringContainer.clientWidth, ringContainer.clientHeight);
     ringContainer.appendChild(renderer.domElement);
 
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
     // Ring setup
     const ringGeometry = new THREE.TorusGeometry(0.8, 0.1, 16, 100, Math.PI * 2);
     const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.7, roughness: 0.3 });
     ring = new THREE.Mesh(ringGeometry, ringMaterial);
     scene.add(ring);
 
-    const loader = new GLTFLoader();
-    loader.load('path/to/your/model.glb', function (gltf) {
-        const model = gltf.scene;
+    //adding diamond
 
-        // Position the model at the top of the ring
-        model.position.set(0, 0.9, 0); // Adjust these values as needed
-        model.scale.set(0.1, 0.1, 0.1); // Scale the model if necessary
+    const loader = new THREE.GLTFLoader();
 
-        // Add the model to the scene
-        scene.add(model);
-    }, undefined, function (error) {
-        console.error('An error happened while loading the GLB model:', error);
-    });
+        loader.load('scene.gltf', function (gltf) {
+            gltf.scene.scale.set(0.0004, 0.0004, 0.0004);
+            gltf.scene.position.set(0, 1.15, 0);
+            scene.add(gltf.scene);
+        }, undefined, function (error) {
+            console.error(error);
+        });
+
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 5, 5);
