@@ -1,4 +1,4 @@
-let scene, camera, renderer, ring, diamonds = [];
+let scene, camera, renderer, ring, diamonds = [],diamondHolders=[];
 let controls; // Declare controls globally
 
 // Base prices for customization options
@@ -78,7 +78,8 @@ function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff); // White background
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.z = 3;
+    camera.position.y = 2;
 
     // Renderer setup
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -91,7 +92,7 @@ function init() {
     // Initialize OrbitControls
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.autoRotate = true; 
-    controls.autoRotateSpeed = 7; 
+    controls.autoRotateSpeed = 1; 
     // Ring setup
     const ringGeometry = createRingGeometry('round'); 
     const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.9, roughness: 0.1 });
@@ -101,7 +102,7 @@ function init() {
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 2); 
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
     directionalLight.position.set(0, 5, 0);
     scene.add(directionalLight);
     const directionalLight2 = new THREE.DirectionalLight(0xffffff, 3);
@@ -110,6 +111,15 @@ function init() {
     const directionalLight3 = new THREE.DirectionalLight(0xffffff, 3);
     directionalLight3.position.set(0, 0, -5);
     scene.add(directionalLight3);
+    const directionalLight4 = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight4.position.set(3, 5, 6);
+    scene.add(directionalLight4);
+    const directionalLight5 = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight5.position.set(-3, -6, -5);
+    scene.add(directionalLight5);
+    const directionalLight6 = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight6.position.set(4, 6, -5);
+    scene.add(directionalLight6);
 
     // Price display
     const priceDisplay = document.createElement('div');
@@ -161,56 +171,64 @@ function init() {
     updateRing();
 }
 
-function createRingGeometry(style, squareness = 1, thickness = 0.2) {
+function createRingGeometry(style, squareness = 0, thickness = 0.2) {
     if (style === 'square') {
         const outerRadius = 0.9;
         const innerRadius = 0.7;
-        const segments = 512;
-
+        const segments = 1024;
+        const smoothingFactor = 0; // Adjust this to control smoothness (0 = circular, 1 = square)
+    
         const shape = new THREE.Shape();
-
+    
         for (let i = 0; i <= segments; i++) {
             const angle = (i / segments) * Math.PI * 2;
             let radius = outerRadius;
-
+    
             if (squareness !== 1.0) {
                 const absAngle = Math.abs(angle % (Math.PI / 2));
-                radius = outerRadius * (1 - squareness * Math.sin(absAngle));
+                const sineRadius = outerRadius * (1 - squareness * Math.sin(absAngle));
+                const circularRadius = outerRadius;
+                // Interpolate between circular and sine-based radius
+                radius = circularRadius * (1 - smoothingFactor) + sineRadius * smoothingFactor;
             }
-
+    
             const x = radius * Math.cos(angle);
             const y = radius * Math.sin(angle);
-
+    
             if (i === 0) {
                 shape.moveTo(x, y);
             } else {
                 shape.lineTo(x, y);
             }
         }
-
+    
         const hole = new THREE.Path();
         for (let i = 0; i <= segments; i++) {
             const angle = (i / segments) * Math.PI * 2;
             let radius = innerRadius;
-
+    
             if (squareness !== 1.0) {
                 const absAngle = Math.abs(angle % (Math.PI / 2));
-                radius = innerRadius * (1 - squareness * Math.sin(absAngle));
+                const sineRadius = innerRadius * (1 - squareness * Math.sin(absAngle));
+                const circularRadius = innerRadius;
+                // Interpolate between circular and sine-based radius
+                radius = circularRadius * (1 - smoothingFactor) + sineRadius * smoothingFactor;
             }
-
+    
             const x = radius * Math.cos(angle);
             const y = radius * Math.sin(angle);
-
+    
             if (i === 0) {
                 hole.moveTo(x, y);
             } else {
                 hole.lineTo(x, y);
             }
         }
-
+    
         shape.holes.push(hole);
-
-        return new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false }); // Use thickness here
+    
+        return new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false });
+    
     } else {
         return new THREE.TorusGeometry(0.8, 0.1, 16, 100, Math.PI * 2);
     }
@@ -229,6 +247,8 @@ function updateRing() {
     const paveStyle = document.getElementById('pave_style').value;
     const bandWidth = document.getElementById('band_width').value;
     const engraving = document.getElementById('engraving').value;
+
+
 
     // Update ring material based on metal selection
     const metalColors = {
@@ -256,6 +276,7 @@ function updateRing() {
     // Update diamonds based on center stone selection
     const loader = new THREE.GLTFLoader();
     diamonds.forEach(diamond => scene.remove(diamond));
+    diamondHolders.forEach(diamond => scene.remove(diamond));
     diamonds = [];
 
     const diamondCount = {
@@ -275,7 +296,7 @@ function updateRing() {
         const z = 0; // Diamonds are on top of the ring
 
         loader.load('scene.gltf', function (gltf) {
-            gltf.scene.scale.set(0.0004, 0.0004, 0.0004);
+            gltf.scene.scale.set(0.0003, 0.0004, 0.0004);
             if (diamondCount === 1) {
                 gltf.scene.position.set(x, y, z);}
                 else if (diamondCount === 2) {
@@ -284,14 +305,16 @@ function updateRing() {
                         if(i === 0) {
                             gltf.scene.position.set(x, y-0.2, z);
                             // gltf.scene.rotation.x = -35;
-                            const angle = Math.atan2(y, ringRadius); // Calculate the angle to align the diamond perpendicularly
-                            gltf.scene.rotation.z = 90; // Rotate the diamond to align with the ring
+                            const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
+                            gltf.scene.rotation.z = -angle; // Rotate the diamond to align with the ring
                         }
                         else if(i === 1) {
                             gltf.scene.position.set(x, y, z);
                         }
                         else if(i === 2) {
                             gltf.scene.position.set(x, y-0.2, z);
+                            const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
+                            gltf.scene.rotation.z = -angle
                         }
                     }
             // gltf.scene.position.set(x, y, z);
@@ -304,7 +327,71 @@ function updateRing() {
         }, undefined, function (error) {
             console.error(error);
         });
+        
+        loader.load('ringholder.glb', function (gltf) {
+            gltf.scene.scale.set(40,40, 40);
+            gltf.scene.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = new THREE.MeshStandardMaterial({
+                        color: metalColors[metal], 
+                        metalness: 1, 
+                        roughness: 0.1, 
+                    });
+
+                    if (child.name==='ringcircle'&&basketHalo === 'none') {
+                        child.parent.remove(child);
+                    }
+                    else if (child.name==='ringcircle'&&basketHalo === 'basket') {
+
+                    }
+                    else if (child.name==='ringcircle'&&basketHalo === 'halo') {
+                        child.scale.set(1.1, 1.1, 1.1);
+                    }
+                    else if (child.name==='ringcircle'&&basketHalo === 'bezel') {
+                        child.scale.set(1.1, 1.1, 1.1);
+                    }
+                    else if (child.name==='ringcircle'&&basketHalo === 'hidden_halo') {
+                        child.scale.set(1.1, 1.1, 1.1);
+                    }
+        
+                    child.material.needsUpdate = true;
+                }
+            });
+            if (diamondCount === 1) {
+                gltf.scene.position.set(x, y-1, z);}
+                else if (diamondCount === 2) {
+                    gltf.scene.position.set(x, y-1.04, z);}
+                    else if (diamondCount === 3) {
+                        if(i === 0) {
+                            gltf.scene.position.set(x+0.5, y-1, z);
+                            gltf.scene.scale.set(38, 38, 38);
+                            // gltf.scene.rotation.x = -35;
+                            const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
+                            gltf.scene.rotation.z = -angle; // Rotate the diamond to align with the ring
+                        }
+                        else if(i === 1) {
+                            gltf.scene.position.set(x, y-1, z);
+                        }
+                        else if(i === 2) {
+                            gltf.scene.position.set(x-0.5, y-1, z);
+                            gltf.scene.scale.set(38, 38, 38);
+                            const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
+                            gltf.scene.rotation.z = -angle
+                        }
+                    }
+            // gltf.scene.position.set(x, y, z);
+
+            // Rotate the diamond to align with the ring's surface
+            
+
+            diamondHolders.push(gltf.scene);
+            scene.add(gltf.scene);
+        }, undefined, function (error) {
+            console.error(error);
+        });
     }
+
+
 
     // Calculate total price
     const totalPrice =
