@@ -303,7 +303,7 @@ function updateRing() {
                     gltf.scene.position.set(x, y-0.04, z);}
                     else if (diamondCount === 3) {
                         if(i === 0) {
-                            gltf.scene.position.set(x, y-0.2, z);
+                            gltf.scene.position.set(x-0.05, y-0.2, z);
                             // gltf.scene.rotation.x = -35;
                             const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
                             gltf.scene.rotation.z = -angle; // Rotate the diamond to align with the ring
@@ -312,7 +312,7 @@ function updateRing() {
                             gltf.scene.position.set(x, y, z);
                         }
                         else if(i === 2) {
-                            gltf.scene.position.set(x, y-0.2, z);
+                            gltf.scene.position.set(x+0.05, y-0.2, z);
                             const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
                             gltf.scene.rotation.z = -angle
                         }
@@ -327,9 +327,27 @@ function updateRing() {
         }, undefined, function (error) {
             console.error(error);
         });
+
+        let progmodel='';
+        if (prongCount==6 && prongTips=='rounded'){
+            progmodel='6progringholder.glb'
+        }
+        else if (prongCount==6 && prongTips=='claw'){
+            progmodel='6progpointy.glb'
+        }
+        else if (prongCount==4 && prongTips=='claw'){
+            progmodel='4progpointy.glb'
+        }
+        else {
+            progmodel='ringholder.glb'
+        }
+        console.log('Model:', progmodel);
+
         
-        loader.load('ringholder.glb', function (gltf) {
-            gltf.scene.scale.set(40,40, 40);
+        loader.load(progmodel, function (gltf) {
+            gltf.scene.scale.set(60,50, 60);
+
+
             gltf.scene.traverse((child) => {
                 if (child.isMesh) {
                     child.material = new THREE.MeshStandardMaterial({
@@ -338,14 +356,27 @@ function updateRing() {
                         roughness: 0.1, 
                     });
 
+                    
+
                     if (child.name==='ringcircle'&&basketHalo === 'none') {
-                        child.parent.remove(child);
+                        child.scale.set(0.8,2,0.8)
+
+                        console.log('Position:', child.position);
+                        console.log('Scale:', child.scale);
+                
+                        // child.parent.remove(child);
                     }
                     else if (child.name==='ringcircle'&&basketHalo === 'basket') {
-
+                        console.log('Position:', child.position);
+                        console.log('Scale:', child.scale);
+                
                     }
                     else if (child.name==='ringcircle'&&basketHalo === 'halo') {
-                        child.scale.set(1.1, 1.1, 1.1);
+                        child.position.set(0,0.6,0)
+                        console.log('Position:', child.position);
+                        console.log('Scale:', child.scale);
+
+                        // child.scale.set(4,1, 3);
                     }
                     else if (child.name==='ringcircle'&&basketHalo === 'bezel') {
                         child.scale.set(1.1, 1.1, 1.1);
@@ -358,23 +389,23 @@ function updateRing() {
                 }
             });
             if (diamondCount === 1) {
-                gltf.scene.position.set(x, y-1, z);}
+                gltf.scene.position.set(x, y-0.1, z);}
                 else if (diamondCount === 2) {
-                    gltf.scene.position.set(x, y-1.04, z);}
+                    gltf.scene.position.set(x, y-0.16, z);}
                     else if (diamondCount === 3) {
                         if(i === 0) {
-                            gltf.scene.position.set(x+0.5, y-1, z);
-                            gltf.scene.scale.set(38, 38, 38);
+                            gltf.scene.position.set(x-0.03, y-0.27, z);
+                            // gltf.scene.scale.set(38, 38, 38);
                             // gltf.scene.rotation.x = -35;
                             const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
                             gltf.scene.rotation.z = -angle; // Rotate the diamond to align with the ring
                         }
                         else if(i === 1) {
-                            gltf.scene.position.set(x, y-1, z);
+                            gltf.scene.position.set(x, y-0.1, z);
                         }
                         else if(i === 2) {
-                            gltf.scene.position.set(x-0.5, y-1, z);
-                            gltf.scene.scale.set(38, 38, 38);
+                            gltf.scene.position.set(x+0.03, y-0.27, z);
+                            // gltf.scene.scale.set(38, 38, 38);
                             const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
                             gltf.scene.rotation.z = -angle
                         }
