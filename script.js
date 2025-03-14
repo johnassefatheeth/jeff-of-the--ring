@@ -76,6 +76,10 @@ animate();
 function init() {
     // Scene setup
     scene = new THREE.Scene();
+    const Tloader = new THREE.TextureLoader();
+    Tloader.load('bg.jpeg', function (texture) {
+    scene.background = texture;
+  });
     scene.background = new THREE.Color(0xffffff); // White background
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 3;
@@ -439,10 +443,6 @@ function updateRing() {
                         metalness: 1,
                         roughness: 0.1,
                     });
-                    if(prongPave=='none' && child.name === 'Object_9'){
-                        child.visible=false;
-
-                    }
 
                     if (child.name === 'ringcircle' && basketHalo === 'none') {
                         child.scale.set(0.8, 2, 0.8);
