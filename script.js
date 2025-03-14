@@ -376,8 +376,8 @@ function updateRing() {
 
             // Load and apply texture to the diamond model
             const diamondTexture = textureLoader.load('dtext.jpg');
-            diamondTexture.wrapS = THREE.RepeatWrapping; 
-            diamondTexture.wrapT = THREE.RepeatWrapping;
+            // diamondTexture.wrapS = THREE.RepeatWrapping; 
+            // diamondTexture.wrapT = THREE.RepeatWrapping;
             diamondTexture.repeat.set(5,5);
             gltf.scene.traverse((child) => {
                 if (child.isMesh) {
@@ -408,23 +408,23 @@ function updateRing() {
 
         let progmodel = '';
         if (prongCount == 6 && prongTips == 'rounded') {
-            progmodel = '6progringholder.glb';
+            progmodel = './prongs/6progringholder.glb';
         } else if (prongCount == 6 && prongTips == 'claw') {
-            progmodel = '6progpointy.glb';
+            progmodel = './prongs/6progpointy.glb';
 }
 
-            else if (prongCount==6&&prongTips=='tab'){
-                progmodel='6progtab'
+            else if (prongCount==6 && prongTips=='tab'){
+                progmodel='./prongs/6progtab.glb'
             }
             else if (prongCount==4&&prongTips=='tab'){
-                progmodel='4progtab'
+                progmodel='./prongs/4progtab.glb'
             }
          else if (prongCount == 4 && prongTips == 'claw') {
-            progmodel = '4progpointy.glb';
+            progmodel = './prongs/4progpointy.glb';
         } else {
-            progmodel = 'ringholder.glb';
+            progmodel = './prongs/ringholder.glb';
         }
-        console.log('Model:', progmodel);
+        
 
         loader.load(progmodel, function (gltf) {
                 gltf.scene.scale.set(80, 50, 80);
@@ -439,6 +439,10 @@ function updateRing() {
                         metalness: 1,
                         roughness: 0.1,
                     });
+                    if(prongPave=='none' && child.name === 'Object_9'){
+                        child.visible=false;
+
+                    }
 
                     if (child.name === 'ringcircle' && basketHalo === 'none') {
                         child.scale.set(0.8, 2, 0.8);
