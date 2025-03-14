@@ -349,6 +349,9 @@ function updateRing() {
             else if (stoneshape === 'radient') {
                 gltf.scene.scale.set(0.35, 0.2, 0.35);
             }
+            else if (stoneshape === 'pear') {
+                gltf.scene.scale.set(0.35, 0.2, 0.35);
+            }
 
             
 
@@ -408,7 +411,15 @@ function updateRing() {
             progmodel = '6progringholder.glb';
         } else if (prongCount == 6 && prongTips == 'claw') {
             progmodel = '6progpointy.glb';
-        } else if (prongCount == 4 && prongTips == 'claw') {
+}
+
+            else if (prongCount==6&&prongTips=='tab'){
+                progmodel='6progtab'
+            }
+            else if (prongCount==4&&prongTips=='tab'){
+                progmodel='4progtab'
+            }
+         else if (prongCount == 4 && prongTips == 'claw') {
             progmodel = '4progpointy.glb';
         } else {
             progmodel = 'ringholder.glb';
@@ -417,6 +428,9 @@ function updateRing() {
 
         loader.load(progmodel, function (gltf) {
                 gltf.scene.scale.set(80, 50, 80);
+                if (stoneshape === 'marquise'|| stoneshape === 'pear') {
+                    gltf.scene.rotation.y=43;
+                }
 
             gltf.scene.traverse((child) => {
                 if (child.isMesh) {
