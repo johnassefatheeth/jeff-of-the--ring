@@ -102,9 +102,9 @@ function init() {
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 2); 
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight.position.set(0, 5, 0);
-    scene.add(directionalLight);
+    // const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+    // directionalLight.position.set(0, 5, 0);
+    // scene.add(directionalLight);
     const directionalLight2 = new THREE.DirectionalLight(0xffffff, 3);
     directionalLight2.position.set(0, 0, 5);
     scene.add(directionalLight2);
@@ -117,9 +117,9 @@ function init() {
     const directionalLight5 = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight5.position.set(-3, -6, -5);
     scene.add(directionalLight5);
-    const directionalLight6 = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight6.position.set(4, 6, -5);
-    scene.add(directionalLight6);
+    // const directionalLight6 = new THREE.DirectionalLight(0xffffff, 1);
+    // directionalLight6.position.set(4, 6, -5);
+    // scene.add(directionalLight6);
 
     // Price display
     const priceDisplay = document.createElement('div');
@@ -160,6 +160,7 @@ function init() {
     document.getElementById('pave_style').addEventListener('change', updateRing);
     document.getElementById('band_width').addEventListener('change', updateRing);
     document.getElementById('engraving').addEventListener('change', updateRing);
+    document.getElementById('stoneshape').addEventListener('change', updateRing);
 
     // Add to Cart button click event
     addToCartButton.addEventListener('click', addToCart);
@@ -247,8 +248,7 @@ function updateRing() {
     const paveStyle = document.getElementById('pave_style').value;
     const bandWidth = document.getElementById('band_width').value;
     const engraving = document.getElementById('engraving').value;
-
-
+    const stoneshape = document.getElementById('stoneshape').value;
 
     // Update ring material based on metal selection
     const metalColors = {
@@ -275,6 +275,8 @@ function updateRing() {
 
     // Update diamonds based on center stone selection
     const loader = new THREE.GLTFLoader();
+    const textureLoader = new THREE.TextureLoader(); // Add texture loader
+
     diamonds.forEach(diamond => scene.remove(diamond));
     diamondHolders.forEach(diamond => scene.remove(diamond));
     diamonds = [];
@@ -295,32 +297,105 @@ function updateRing() {
         const y = diamondBaseHeight; // Height of the diamonds
         const z = 0; // Diamonds are on top of the ring
 
-        loader.load('scene.gltf', function (gltf) {
-            gltf.scene.scale.set(0.0003, 0.0004, 0.0004);
-            if (diamondCount === 1) {
-                gltf.scene.position.set(x, y, z);}
-                else if (diamondCount === 2) {
-                    gltf.scene.position.set(x, y-0.04, z);}
-                    else if (diamondCount === 3) {
-                        if(i === 0) {
-                            gltf.scene.position.set(x-0.05, y-0.2, z);
-                            // gltf.scene.rotation.x = -35;
-                            const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
-                            gltf.scene.rotation.z = -angle; // Rotate the diamond to align with the ring
-                        }
-                        else if(i === 1) {
-                            gltf.scene.position.set(x, y, z);
-                        }
-                        else if(i === 2) {
-                            gltf.scene.position.set(x+0.05, y-0.2, z);
-                            const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
-                            gltf.scene.rotation.z = -angle
-                        }
-                    }
-            // gltf.scene.position.set(x, y, z);
+        let diamondModel = '';
+        if (stoneshape === 'princess') {
+            diamondModel = './diamonds/princess.glb';
+        }
+        else if (stoneshape === 'oval') {
+            diamondModel = './diamonds/oval.glb';
+        }
+        else if (stoneshape === 'round') {
+            diamondModel = './diamonds/round.glb';
+        }
+        else if (stoneshape === 'emerald') {
+            diamondModel = './diamonds/emeraled.glb';
+        }
+        else if (stoneshape === 'pear') {
+            diamondModel = './diamonds/pear.glb';
+        }
+        else if (stoneshape === 'marquise') {
+            diamondModel = './diamonds/marquise.glb';
+        }
+        else if (stoneshape === 'ascher') {
+            diamondModel = './diamonds/ascher.glb';
+        }
+        else if (stoneshape === 'radient') {
+            diamondModel = './diamonds/radient.glb';
+        }
+        else if (stoneshape === 'cushion') {
+            diamondModel = './diamonds/cushion.glb';
+        }
 
-            // Rotate the diamond to align with the ring's surface
+        loader.load(diamondModel, function (gltf) {
+                gltf.scene.scale.set(0.4, 0.4, 0.4);
+            if (stoneshape === 'round') {
+                gltf.scene.scale.set(0.57, 0.38, 0.57);
+            } else if (stoneshape === 'oval') {
+                gltf.scene.scale.set(0.4, 0.38, 0.3);
+            }
+            else if (stoneshape === 'princess') {
+                gltf.scene.scale.set(0.34, 0.3, 0.34);
+            }
             
+            else if (stoneshape === 'ascher') {
+                gltf.scene.scale.set(0.4, 0.3, 0.4);
+            }
+            else if (stoneshape === 'emerald') {
+                gltf.scene.scale.set(0.4, 0.26, 0.3);
+            }
+            else if (stoneshape === 'cushion') {
+                gltf.scene.scale.set(0.35, 0.2, 0.35);
+            }
+            else if (stoneshape === 'radient') {
+                gltf.scene.scale.set(0.35, 0.2, 0.35);
+            }
+
+            
+
+            if (diamondCount === 1) {
+                gltf.scene.position.set(x, y, z);
+            } else if (diamondCount === 2) {
+                gltf.scene.position.set(x, y - 0.04, z);
+            } else if (diamondCount === 3) {
+                if (i === 0) {
+                    gltf.scene.position.set(x - 0.05, y - 0.2, z);
+                    const angle = Math.atan2(x, ringRadius);
+                    gltf.scene.rotation.z = -angle;
+                } else if (i === 1) {
+                    gltf.scene.position.set(x, y, z);
+                } else if (i === 2) {
+                    gltf.scene.position.set(x + 0.05, y - 0.2, z);
+                    const angle = Math.atan2(x, ringRadius);
+                    gltf.scene.rotation.z = -angle;
+                }
+            }
+
+
+            // Load and apply texture to the diamond model
+            const diamondTexture = textureLoader.load('dtext.jpg');
+            diamondTexture.wrapS = THREE.RepeatWrapping; 
+            diamondTexture.wrapT = THREE.RepeatWrapping;
+            diamondTexture.repeat.set(5,5);
+            gltf.scene.traverse((child) => {
+                if (child.isMesh) {
+                    console.log('Child:', child);
+                    // Scale the UVs to make the texture repeat
+                    const uvAttribute = child.geometry.attributes.uv;
+                    for (let i = 0; i < uvAttribute.array.length; i++) {
+                        uvAttribute.array[i] *= 1; // Scale UVs by a factor of 5
+                    }
+                    uvAttribute.needsUpdate = true; // Ensure the changes are applied
+            
+                    child.material = new THREE.MeshStandardMaterial({
+                        map: diamondTexture,
+                        transparent: true,
+                        opacity: 0.9,
+                        side: THREE.DoubleSide,
+                        metalness: 0.5,
+                        roughness: 0.5
+                    });
+                }
+            });
 
             diamonds.push(gltf.scene);
             scene.add(gltf.scene);
@@ -328,92 +403,62 @@ function updateRing() {
             console.error(error);
         });
 
-        let progmodel='';
-        if (prongCount==6 && prongTips=='rounded'){
-            progmodel='6progringholder.glb'
-        }
-        else if (prongCount==6 && prongTips=='claw'){
-            progmodel='6progpointy.glb'
-        }
-        else if (prongCount==4 && prongTips=='claw'){
-            progmodel='4progpointy.glb'
-        }
-        else {
-            progmodel='ringholder.glb'
+        let progmodel = '';
+        if (prongCount == 6 && prongTips == 'rounded') {
+            progmodel = '6progringholder.glb';
+        } else if (prongCount == 6 && prongTips == 'claw') {
+            progmodel = '6progpointy.glb';
+        } else if (prongCount == 4 && prongTips == 'claw') {
+            progmodel = '4progpointy.glb';
+        } else {
+            progmodel = 'ringholder.glb';
         }
         console.log('Model:', progmodel);
 
-        
         loader.load(progmodel, function (gltf) {
-            gltf.scene.scale.set(60,50, 60);
-
+                gltf.scene.scale.set(80, 50, 80);
 
             gltf.scene.traverse((child) => {
                 if (child.isMesh) {
                     child.material = new THREE.MeshStandardMaterial({
-                        color: metalColors[metal], 
-                        metalness: 1, 
-                        roughness: 0.1, 
+                        color: metalColors[metal],
+                        metalness: 1,
+                        roughness: 0.1,
                     });
 
-                    
-
-                    if (child.name==='ringcircle'&&basketHalo === 'none') {
-                        child.scale.set(0.8,2,0.8)
-
-                        console.log('Position:', child.position);
-                        console.log('Scale:', child.scale);
-                
-                        // child.parent.remove(child);
-                    }
-                    else if (child.name==='ringcircle'&&basketHalo === 'basket') {
-                        console.log('Position:', child.position);
-                        console.log('Scale:', child.scale);
-                
-                    }
-                    else if (child.name==='ringcircle'&&basketHalo === 'halo') {
-                        child.position.set(0,0.6,0)
-                        console.log('Position:', child.position);
-                        console.log('Scale:', child.scale);
-
-                        // child.scale.set(4,1, 3);
-                    }
-                    else if (child.name==='ringcircle'&&basketHalo === 'bezel') {
+                    if (child.name === 'ringcircle' && basketHalo === 'none') {
+                        child.scale.set(0.8, 2, 0.8);
+                    } else if (child.name === 'ringcircle' && basketHalo === 'basket') {
+                        // No changes
+                    } else if (child.name === 'ringcircle' && basketHalo === 'halo') {
+                        child.position.set(0, 0.6, 0);
+                    } else if (child.name === 'ringcircle' && basketHalo === 'bezel') {
+                        child.scale.set(1.1, 1.1, 1.1);
+                    } else if (child.name === 'ringcircle' && basketHalo === 'hidden_halo') {
                         child.scale.set(1.1, 1.1, 1.1);
                     }
-                    else if (child.name==='ringcircle'&&basketHalo === 'hidden_halo') {
-                        child.scale.set(1.1, 1.1, 1.1);
-                    }
-        
+
                     child.material.needsUpdate = true;
                 }
             });
-            if (diamondCount === 1) {
-                gltf.scene.position.set(x, y-0.1, z);}
-                else if (diamondCount === 2) {
-                    gltf.scene.position.set(x, y-0.16, z);}
-                    else if (diamondCount === 3) {
-                        if(i === 0) {
-                            gltf.scene.position.set(x-0.03, y-0.27, z);
-                            // gltf.scene.scale.set(38, 38, 38);
-                            // gltf.scene.rotation.x = -35;
-                            const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
-                            gltf.scene.rotation.z = -angle; // Rotate the diamond to align with the ring
-                        }
-                        else if(i === 1) {
-                            gltf.scene.position.set(x, y-0.1, z);
-                        }
-                        else if(i === 2) {
-                            gltf.scene.position.set(x+0.03, y-0.27, z);
-                            // gltf.scene.scale.set(38, 38, 38);
-                            const angle = Math.atan2(x, ringRadius); // Calculate the angle to align the diamond perpendicularly
-                            gltf.scene.rotation.z = -angle
-                        }
-                    }
-            // gltf.scene.position.set(x, y, z);
 
-            // Rotate the diamond to align with the ring's surface
-            
+            if (diamondCount === 1) {
+                gltf.scene.position.set(x, y - 0.1, z);
+            } else if (diamondCount === 2) {
+                gltf.scene.position.set(x, y - 0.16, z);
+            } else if (diamondCount === 3) {
+                if (i === 0) {
+                    gltf.scene.position.set(x - 0.03, y - 0.27, z);
+                    const angle = Math.atan2(x, ringRadius);
+                    gltf.scene.rotation.z = -angle;
+                } else if (i === 1) {
+                    gltf.scene.position.set(x, y - 0.1, z);
+                } else if (i === 2) {
+                    gltf.scene.position.set(x + 0.03, y - 0.27, z);
+                    const angle = Math.atan2(x, ringRadius);
+                    gltf.scene.rotation.z = -angle;
+                }
+            }
 
             diamondHolders.push(gltf.scene);
             scene.add(gltf.scene);
@@ -421,8 +466,6 @@ function updateRing() {
             console.error(error);
         });
     }
-
-
 
     // Calculate total price
     const totalPrice =
