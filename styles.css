@@ -35,7 +35,7 @@ body {
 }
 
 #ring-container {
-    flex-grow: 1; /* Take up remaining space */
+    flex-grow: 1; 
     background-color: #fff;
-    position: relative; /* Ensure the renderer is positioned correctly */
+    position: relative; 
 }

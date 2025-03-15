@@ -98,33 +98,35 @@ function init() {
     controls.autoRotate = true; 
     controls.autoRotateSpeed = 1; 
     // Ring setup
-    const ringGeometry = createRingGeometry('round'); 
-    const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.9, roughness: 0.1 });
-    ring = new THREE.Mesh(ringGeometry, ringMaterial);
-    scene.add(ring);
+    createRingGeometry('squared',0xffd700);
+    // const ringGeometry =  
+    // const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.9, roughness: 0.1 });
+    // ring = new THREE.Mesh(ringGeometry, ringMaterial);
+    // scene.add(ring);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2); 
+    const ambientLight = new THREE.AmbientLight(0xffffff, 10); 
     scene.add(ambientLight);
-    // const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-    // directionalLight.position.set(0, 5, 0);
-    // scene.add(directionalLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+    directionalLight.position.set(0, 0, 5);
+    scene.add(directionalLight);
     const directionalLight2 = new THREE.DirectionalLight(0xffffff, 3);
     directionalLight2.position.set(0, 0, 5);
     scene.add(directionalLight2);
     const directionalLight3 = new THREE.DirectionalLight(0xffffff, 3);
     directionalLight3.position.set(0, 0, -5);
     scene.add(directionalLight3);
-    const directionalLight4 = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight4.position.set(3, 5, 6);
+    const directionalLight4 = new THREE.DirectionalLight(0xffffff, 3);
+    directionalLight4.position.set(5, 0, 0);
     scene.add(directionalLight4);
-    const directionalLight5 = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight5.position.set(-3, -6, -5);
+    const directionalLight5 = new THREE.DirectionalLight(0xffffff, 3);
+    directionalLight5.position.set(-5, 0, 0);
     scene.add(directionalLight5);
-    // const directionalLight6 = new THREE.DirectionalLight(0xffffff, 1);
-    // directionalLight6.position.set(4, 6, -5);
-    // scene.add(directionalLight6);
+    const directionalLight6 = new THREE.DirectionalLight(0xffffff, 3);
+    directionalLight6.position.set(0, -6, -5);
+    scene.add(directionalLight6);
 
+    
     // Price display
     const priceDisplay = document.createElement('div');
     priceDisplay.style.position = 'absolute';
@@ -176,67 +178,48 @@ function init() {
     updateRing();
 }
 
-function createRingGeometry(style, squareness = 0, thickness = 0.2) {
-    if (style === 'square') {
-        const outerRadius = 0.9;
-        const innerRadius = 0.7;
-        const segments = 1024;
-        const smoothingFactor = 0; // Adjust this to control smoothness (0 = circular, 1 = square)
+function createRingGeometry(style, color,paveStyle) {
     
-        const shape = new THREE.Shape();
-    
-        for (let i = 0; i <= segments; i++) {
-            const angle = (i / segments) * Math.PI * 2;
-            let radius = outerRadius;
-    
-            if (squareness !== 1.0) {
-                const absAngle = Math.abs(angle % (Math.PI / 2));
-                const sineRadius = outerRadius * (1 - squareness * Math.sin(absAngle));
-                const circularRadius = outerRadius;
-                // Interpolate between circular and sine-based radius
-                radius = circularRadius * (1 - smoothingFactor) + sineRadius * smoothingFactor;
-            }
-    
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
-    
-            if (i === 0) {
-                shape.moveTo(x, y);
-            } else {
-                shape.lineTo(x, y);
-            }
-        }
-    
-        const hole = new THREE.Path();
-        for (let i = 0; i <= segments; i++) {
-            const angle = (i / segments) * Math.PI * 2;
-            let radius = innerRadius;
-    
-            if (squareness !== 1.0) {
-                const absAngle = Math.abs(angle % (Math.PI / 2));
-                const sineRadius = innerRadius * (1 - squareness * Math.sin(absAngle));
-                const circularRadius = innerRadius;
-                // Interpolate between circular and sine-based radius
-                radius = circularRadius * (1 - smoothingFactor) + sineRadius * smoothingFactor;
-            }
-    
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
-    
-            if (i === 0) {
-                hole.moveTo(x, y);
-            } else {
-                hole.lineTo(x, y);
-            }
-        }
-    
-        shape.holes.push(hole);
-    
-        return new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false });
-    
-    } else {
-        return new THREE.TorusGeometry(0.8, 0.1, 16, 100, Math.PI * 2);
+    const loader = new THREE.GLTFLoader();
+    const textureLoader = new THREE.TextureLoader();
+    let ringmodel=''
+    if(style === 'square' && paveStyle==='none') {
+        ringmodel='./new rings/squaredring.glb'
     }
+    else if(style === 'square' &&paveStyle==='petite_french') {
+        ringmodel='./new rings/squared1_2frechpetitering.glb'
+    }
+    else{
+        ringmodel='./new rings/roundring.glb'
+
+    }
+    loader.load(ringmodel, function (gltf) {
+        if(style === 'round'&&paveStyle==='none') {
+        gltf.scene.scale.set(18,18,18)
+        }
+        if(style === 'square'&&paveStyle==='none') {
+            gltf.scene.scale.set(3.5,3.5,3.5)
+        }
+        
+    else if(style === 'square' && paveStyle==='petite_french') {
+        gltf.scene.scale.set(3.5,3.5,3.5)
+    }
+                    if (ring)scene.remove(ring)
+
+
+        gltf.scene.traverse((child) => {
+                if (child.isMesh&& child.name!=='Round Mirror Instance') {
+                    child.material = new THREE.MeshStandardMaterial({
+                        color: color,
+                        metalness: 1,
+                        roughness: 0.1, 
+                        flatShading: false
+                        
+                    })}})
+                    ring=gltf.scene
+        scene.add(ring)
+
+    })
 }
 
 function updateRing() {
@@ -266,16 +249,17 @@ function updateRing() {
         'platinum': 0xe5e4e2,
         'mixed': 0xcccccc
     };
-    ring.material.color.set(metalColors[metal]);
-
+    // ring.material.color.set();
+    console.log(paveStyle)
+    createRingGeometry(bandStyle,metalColors[metal],paveStyle);
     // Update ring geometry based on band style
-    ring.geometry.dispose(); // Dispose of the old geometry
-    ring.geometry = createRingGeometry(bandStyle);
-    if (bandStyle === 'square') {
-        ring.position.z = -0.1; // Adjust the ring position for square style
-    } else {
-        ring.position.z = 0; // Adjust the ring position for round
-    }
+    // ring.geometry.dispose(); // Dispose of the old geometry
+    // ring.geometry = 
+    // if (bandStyle === 'square') {
+    //     ring.position.z = -0.1; // Adjust the ring position for square style
+    // } else {
+    //     ring.position.z = 0; // Adjust the ring position for round
+    // }
 
     // Update diamonds based on center stone selection
     const loader = new THREE.GLTFLoader();
