@@ -183,27 +183,36 @@ function createRingGeometry(style, color,paveStyle) {
     const loader = new THREE.GLTFLoader();
     const textureLoader = new THREE.TextureLoader();
     let ringmodel=''
-    if(style === 'square' && paveStyle==='none') {
+    if(style === 'square' && paveStyle==='none' && cathedral.value==='none') {
         ringmodel='./new rings/squaredring.glb'
     }
     else if(style === 'square' &&paveStyle==='petite_french') {
         ringmodel='./new rings/squared1_2frechpetitering.glb'
+    }
+    else if(style === 'round' && paveStyle==='none'&& cathedral.value==='cathedral') {
+        ringmodel='./new rings/cath.glb'
     }
     else{
         ringmodel='./new rings/roundring.glb'
 
     }
     loader.load(ringmodel, function (gltf) {
-        if(style === 'round'&&paveStyle==='none') {
+        
+        gltf.scene.scale.set(0.23,0.23,0.23)
+        if(style === 'round' && paveStyle==='none'&& cathedral.value==='cathedral') {
+            gltf.scene.scale.set(0.23,0.23,0.23)
+    
+        }
+        else if(style === 'round'&&paveStyle==='none') {
         gltf.scene.scale.set(18,18,18)
         }
-        if(style === 'square'&&paveStyle==='none') {
+        else if(style === 'square'&&paveStyle==='none') {
             gltf.scene.scale.set(3.5,3.5,3.5)
         }
         
-    else if(style === 'square' && paveStyle==='petite_french') {
-        gltf.scene.scale.set(3.5,3.5,3.5)
-    }
+        else if(style === 'square' && paveStyle==='petite_french') {
+            gltf.scene.scale.set(3.5,3.5,3.5)
+        }
                     if (ring)scene.remove(ring)
 
 
