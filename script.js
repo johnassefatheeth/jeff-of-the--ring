@@ -105,27 +105,41 @@ function init() {
     // scene.add(ring);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 10); 
+    const ambientLight = new THREE.AmbientLight(0xffffff, 3); 
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight.position.set(0, 0, 5);
-    scene.add(directionalLight);
-    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight2.position.set(0, 0, 5);
-    scene.add(directionalLight2);
-    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight3.position.set(0, 0, -5);
-    scene.add(directionalLight3);
-    const directionalLight4 = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight4.position.set(5, 0, 0);
-    scene.add(directionalLight4);
-    const directionalLight5 = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight5.position.set(-5, 0, 0);
-    scene.add(directionalLight5);
-    const directionalLight6 = new THREE.DirectionalLight(0xffffff, 3);
-    directionalLight6.position.set(0, -6, -5);
-    scene.add(directionalLight6);
 
+    // // Add multiple directional lights from different angles
+    const SpotLight1 = new THREE.SpotLight(0xffffff, 3);
+    SpotLight1.position.set(5, 2, 2);
+    scene.add(SpotLight1);
+
+    const SpotLight2 = new THREE.SpotLight(0xffffff, 3);
+    SpotLight2.position.set(-2, 2, 2);
+    scene.add(SpotLight2);
+
+    const SpotLight3 = new THREE.SpotLight(0xffffff, 3);
+    SpotLight3.position.set(2, 2, -2);
+    scene.add(SpotLight3);
+
+    const SpotLight4 = new THREE.SpotLight(0xffffff, 3);
+    SpotLight4.position.set(-2, 2, -2);
+    scene.add(SpotLight4);
+
+    const SpotLight5 = new THREE.SpotLight(0xffffff, 3);
+    SpotLight5.position.set(0, 2, 0);
+    scene.add(SpotLight5);
+
+    const SpotLight6 = new THREE.SpotLight(0xffffff, 3);
+    SpotLight6.position.set(0, -2, 0);
+    scene.add(SpotLight6);
+
+    
+    const SpotLight7 = new THREE.SpotLight(0xffffff, 3);
+    SpotLight7.position.set(-2,0, 0);
+    scene.add(SpotLight7);
+    const SpotLight8 = new THREE.SpotLight(0xffffff, 3);
+    SpotLight8.position.set(2,0, 0);
+    scene.add(SpotLight8);
     
     // Price display
     const priceDisplay = document.createElement('div');
@@ -197,14 +211,12 @@ function createRingGeometry(style, color,paveStyle) {
 
     }
     loader.load(ringmodel, function (gltf) {
-        
-        gltf.scene.scale.set(0.23,0.23,0.23)
         if(style === 'round' && paveStyle==='none'&& cathedral.value==='cathedral') {
             gltf.scene.scale.set(0.23,0.23,0.23)
     
         }
         else if(style === 'round'&&paveStyle==='none') {
-        gltf.scene.scale.set(18,18,18)
+        gltf.scene.scale.set(0.0185,0.0185,0.0185)
         }
         else if(style === 'square'&&paveStyle==='none') {
             gltf.scene.scale.set(3.5,3.5,3.5)
@@ -217,11 +229,11 @@ function createRingGeometry(style, color,paveStyle) {
 
 
         gltf.scene.traverse((child) => {
-                if (child.isMesh&& child.name!=='Round Mirror Instance') {
+                if (child.isMesh) {
                     child.material = new THREE.MeshStandardMaterial({
                         color: color,
                         metalness: 1,
-                        roughness: 0.1, 
+                        roughness: 0.00000005, 
                         flatShading: false
                         
                     })}})
@@ -516,4 +528,6 @@ function animate() {
     requestAnimationFrame(animate);
     controls.update(); 
     renderer.render(scene, camera);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 2.5; 
 }
