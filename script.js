@@ -531,3 +531,18 @@ function animate() {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 2.5; 
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.section');
+
+    sections.forEach(section => {
+        const header = section.querySelector('.section-header');
+        const content = section.querySelector('.section-content');
+        const arrow = header.querySelector('.arrow');
+
+        header.addEventListener('click', () => {
+            content.classList.toggle('open');
+            arrow.textContent = content.classList.contains('open') ? '▲' : '▼';
+        });
+    });
+});
