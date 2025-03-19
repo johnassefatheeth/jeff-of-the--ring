@@ -181,6 +181,7 @@ function init() {
     document.getElementById('band_width').addEventListener('change', updateRing);
     document.getElementById('engraving').addEventListener('change', updateRing);
     document.getElementById('stoneshape').addEventListener('change', updateRing);
+    document.getElementById('pave_length').addEventListener('change', updateRing);
 
     // Add to Cart button click event
     addToCartButton.addEventListener('click', addToCart);
@@ -192,19 +193,43 @@ function init() {
     updateRing();
 }
 
-function createRingGeometry(style, color,paveStyle) {
+function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
     
     const loader = new THREE.GLTFLoader();
-    const textureLoader = new THREE.TextureLoader();
     let ringmodel=''
-    if(style === 'square' && paveStyle==='none' && cathedral.value==='none') {
+    if(style === 'square' && paveStyle==='none' && cathedral.value==='none' && diamondCount==1) {
         ringmodel='./new rings/squaredring.glb'
     }
-    else if(style === 'square' &&paveStyle==='petite_french') {
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==1 && paveLength=='1/2') {
         ringmodel='./new rings/squared1_2frechpetitering.glb'
     }
-    else if(style === 'round' && paveStyle==='none'&& cathedral.value==='cathedral') {
-        ringmodel='./new rings/cath.glb'
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='1/2') {
+        ringmodel='./new rings/squared1_2frechpetite2stonering.glb'
+    }
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='1/2') {
+        ringmodel='./new rings/squared1_2frechpetite3stonering.glb'
+    }
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='2/3') {
+        ringmodel='./new rings/squared2_3frechpetite3stonering.glb'
+    }
+    
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='2/3') {
+        ringmodel='./new rings/squared2_3frechpetite2stonering.glb'
+    }
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='2/3') {
+        ringmodel='./new rings/squared2_3frechpetite1stonering.glb'
+    }
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='full') {
+        ringmodel='./new rings/squaredfullfrechpetite2stonering.glb'
+    }
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='full') {
+        ringmodel='./new rings/squaredfullfrechpetite1stonering.glb'
+    }
+    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='full') {
+        ringmodel='./new rings/squaredfullfrechpetite3stonering.glb'
+    }
+    else if(style === 'round' && paveStyle==='none'&& cathedral.value==='cathedral'&&diamondCount==1) {
+        ringmodel='./new rings/roundcath.glb'
     }
     else{
         ringmodel='./new rings/roundring.glb'
@@ -226,17 +251,28 @@ function createRingGeometry(style, color,paveStyle) {
             gltf.scene.scale.set(3.5,3.5,3.5)
         }
                     if (ring)scene.remove(ring)
+                        const textureLoader = new THREE.TextureLoader();
+                    const texture = textureLoader.load('dtext.jpg');
 
-
-        gltf.scene.traverse((child) => {
-                if (child.isMesh) {
-                    child.material = new THREE.MeshStandardMaterial({
-                        color: color,
-                        metalness: 1,
-                        roughness: 0.00000005, 
-                        flatShading: false
-                        
-                    })}})
+                        gltf.scene.traverse((child) => {
+                            if (child.isMesh && !child.name.startsWith('Round')) {
+                                child.material = new THREE.MeshStandardMaterial({
+                                    color: color,
+                                    metalness: 1,
+                                    roughness: 0.00000005, 
+                                    flatShading: false
+                                });
+                            }
+                            if(child.isMesh && child.name.startsWith('Round')){
+                                child.material = new THREE.MeshStandardMaterial({
+                                    map: texture,
+                                    metalness: 0.5,
+                                    roughness: 0.5, 
+                                    flatShading: false
+                                });
+                            }
+                            
+                        });
                     ring=gltf.scene
         scene.add(ring)
 
@@ -257,6 +293,7 @@ function updateRing() {
     const bandWidth = document.getElementById('band_width').value;
     const engraving = document.getElementById('engraving').value;
     const stoneshape = document.getElementById('stoneshape').value;
+    const paveLength = document.getElementById('pave_length').value;
 
     // Update ring material based on metal selection
     const metalColors = {
@@ -269,10 +306,15 @@ function updateRing() {
         '18k_rose': 0xff69b4,
         'platinum': 0xe5e4e2,
         'mixed': 0xcccccc
-    };
+    }; const diamondCount = {
+        'one_stone_solitaire': 1,
+        'one_stone': 1,
+        'two_stone': 2,
+        'three_stone': 3
+    }[centerStone];
+
     // ring.material.color.set();
-    console.log(paveStyle)
-    createRingGeometry(bandStyle,metalColors[metal],paveStyle);
+    createRingGeometry(bandStyle,metalColors[metal],paveStyle,diamondCount,paveLength);
     // Update ring geometry based on band style
     // ring.geometry.dispose(); // Dispose of the old geometry
     // ring.geometry = 
@@ -290,13 +332,7 @@ function updateRing() {
     diamondHolders.forEach(diamond => scene.remove(diamond));
     diamonds = [];
 
-    const diamondCount = {
-        'one_stone_solitaire': 1,
-        'one_stone': 1,
-        'two_stone': 2,
-        'three_stone': 3
-    }[centerStone];
-
+   
     const diamondSpacing = 0.5; // Space between diamonds
     const ringRadius = 0.8; // Radius of the ring
     const diamondBaseHeight = 1.15; // Base height for the diamonds
@@ -390,7 +426,6 @@ function updateRing() {
             diamondTexture.repeat.set(5,5);
             gltf.scene.traverse((child) => {
                 if (child.isMesh) {
-                    console.log('Child:', child);
                     // Scale the UVs to make the texture repeat
                     const uvAttribute = child.geometry.attributes.uv;
                     for (let i = 0; i < uvAttribute.array.length; i++) {
