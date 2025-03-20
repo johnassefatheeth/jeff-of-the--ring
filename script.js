@@ -105,41 +105,54 @@ function init() {
     // scene.add(ring);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 3); 
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0); 
     scene.add(ambientLight);
 
     // // Add multiple directional lights from different angles
-    const SpotLight1 = new THREE.SpotLight(0xffffff, 3);
-    SpotLight1.position.set(5, 2, 2);
-    scene.add(SpotLight1);
+    // const SpotLight1 = new THREE.SpotLight(0xffffff, 13);
+    // SpotLight1.position.set(5, 2, 2);
+    // scene.add(SpotLight1);
 
-    const SpotLight2 = new THREE.SpotLight(0xffffff, 3);
-    SpotLight2.position.set(-2, 2, 2);
-    scene.add(SpotLight2);
+    // const SpotLight2 = new THREE.SpotLight(0xffffff, 13);
+    // SpotLight2.position.set(-2, 2, 2);
+    // scene.add(SpotLight2);
 
-    const SpotLight3 = new THREE.SpotLight(0xffffff, 3);
-    SpotLight3.position.set(2, 2, -2);
-    scene.add(SpotLight3);
+    // const SpotLight3 = new THREE.SpotLight(0xffffff, 13);
+    // SpotLight3.position.set(2, 2, -2);
+    // scene.add(SpotLight3);
 
-    const SpotLight4 = new THREE.SpotLight(0xffffff, 3);
-    SpotLight4.position.set(-2, 2, -2);
-    scene.add(SpotLight4);
+    // const SpotLight4 = new THREE.SpotLight(0xffffff, 13);
+    // SpotLight4.position.set(-2, 2, -2);
+    // scene.add(SpotLight4);
 
-    const SpotLight5 = new THREE.SpotLight(0xffffff, 3);
-    SpotLight5.position.set(0, 2, 0);
-    scene.add(SpotLight5);
+    // const SpotLight5 = new THREE.SpotLight(0xffffff, 13);
+    // SpotLight5.position.set(0, 2, 0);
+    // scene.add(SpotLight5);
 
-    const SpotLight6 = new THREE.SpotLight(0xffffff, 3);
-    SpotLight6.position.set(0, -2, 0);
-    scene.add(SpotLight6);
+    // const SpotLight6 = new THREE.SpotLight(0xffffff, 13);
+    // SpotLight6.position.set(0, -2, 0);
+    // scene.add(SpotLight6);
 
     
-    const SpotLight7 = new THREE.SpotLight(0xffffff, 3);
-    SpotLight7.position.set(-2,0, 0);
+    const SpotLight7 = new THREE.SpotLight(0xffffff, 13);
+    SpotLight7.position.set(-2,-2, 0);
     scene.add(SpotLight7);
-    const SpotLight8 = new THREE.SpotLight(0xffffff, 3);
-    SpotLight8.position.set(2,0, 0);
+    const SpotLight8 = new THREE.SpotLight(0xffffff, 13);
+    SpotLight8.position.set(2,-2, 0);
     scene.add(SpotLight8);
+
+    
+    const SpotLight9 = new THREE.SpotLight(0xffffff, 10);
+    SpotLight9.position.set(0,0, 4);
+    scene.add(SpotLight9);
+    const SpotLight10 = new THREE.SpotLight(0xffffff, 10);
+    SpotLight10.position.set(0,0, -4);
+    scene.add(SpotLight10);
+
+    const rectLight = new THREE.RectAreaLight(0xffffff, 5, 2, 2); // (color, intensity, width, height)
+    rectLight.position.set(0, 3, 0); 
+    rectLight.lookAt(0, 0, 0); // Point it at the ring
+    scene.add(rectLight);
     
     // Price display
     const priceDisplay = document.createElement('div');
@@ -197,7 +210,7 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
     
     const loader = new THREE.GLTFLoader();
     let ringmodel=''
-    if(style === 'square' && paveStyle==='none' && cathedral.value==='none' && diamondCount==1) {
+    if(style === 'square' && paveStyle==='none' && cathedral.value==='none' && (diamondCount==1 ||diamondCount==2||diamondCount==3)) {
         ringmodel='./new rings/squaredring.glb'
     }
     else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==1 && paveLength=='1/2'&& cathedral.value==='none') {
@@ -290,13 +303,15 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
                     if (ring)scene.remove(ring)
                         const textureLoader = new THREE.TextureLoader();
                     const texture = textureLoader.load('dtext.jpg');
+                    const ringtexture=textureLoader.load('goldtext.jpg')
 
                         gltf.scene.traverse((child) => {
                             if (child.isMesh && !child.name.startsWith('Round')) {
                                 child.material = new THREE.MeshStandardMaterial({
                                     color: color,
+                                    // map:ringtexture,
                                     metalness: 1,
-                                    roughness: 0.00000005, 
+                                    roughness: 0.1, 
                                     flatShading: false
                                 });
                             }
@@ -440,7 +455,15 @@ function updateRing() {
             if (diamondCount === 1) {
                 gltf.scene.position.set(x, y, z);
             } else if (diamondCount === 2) {
-                gltf.scene.position.set(x, y - 0.04, z);
+                const angle = Math.atan2(x, ringRadius);
+                if(i==0){
+                gltf.scene.position.set(x-0.027, y - 0.1, z);
+                    gltf.scene.rotation.z=-angle;
+                }
+                else{
+                    gltf.scene.position.set(x+0.1, y - 0.1, z);
+                    gltf.scene.rotation.z=-angle;
+                }
             } else if (diamondCount === 3) {
                 if (i === 0) {
                     gltf.scene.position.set(x - 0.05, y - 0.2, z);
@@ -540,7 +563,15 @@ function updateRing() {
             if (diamondCount === 1) {
                 gltf.scene.position.set(x, y - 0.1, z);
             } else if (diamondCount === 2) {
+                const angle = Math.atan2(x, ringRadius);
+                if(i==0){
                 gltf.scene.position.set(x, y - 0.16, z);
+                    gltf.scene.rotation.z=-angle;
+                }
+                else{
+                    gltf.scene.position.set(x+0.07, y - 0.16, z);
+                    gltf.scene.rotation.z=-angle;
+                }
             } else if (diamondCount === 3) {
                 if (i === 0) {
                     gltf.scene.position.set(x - 0.03, y - 0.27, z);
