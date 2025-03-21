@@ -1,5 +1,6 @@
 let scene, camera, renderer, ring, diamonds = [],diamondHolders=[];
 let controls; // Declare controls globally
+let exrTexture;
 
 // Base prices for customization options
 const prices = {
@@ -72,6 +73,15 @@ const prices = {
 
 init();
 animate();
+const exrLoader = new THREE.EXRLoader();
+exrLoader.load('j.exr', function (texture) {
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    texture.encoding = THREE.sRGBEncoding;
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    scene.environment = texture; 
+    exrTexture = texture;
+});
 
 function init() {
     // Scene setup
@@ -79,6 +89,7 @@ function init() {
     const Tloader = new THREE.TextureLoader();
     Tloader.load('bg.jpeg', function (texture) {
     scene.background = texture;
+    scene.backgroundIntensity = 4.0;
   });
     scene.background = new THREE.Color(0xffffff); // White background
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -105,8 +116,8 @@ function init() {
     // scene.add(ring);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0); 
-    scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 3); 
+    // scene.add(ambientLight);
 
     // // Add multiple directional lights from different angles
     // const SpotLight1 = new THREE.SpotLight(0xffffff, 13);
@@ -134,25 +145,25 @@ function init() {
     // scene.add(SpotLight6);
 
     
-    const SpotLight7 = new THREE.SpotLight(0xffffff, 13);
-    SpotLight7.position.set(-2,-2, 0);
-    scene.add(SpotLight7);
-    const SpotLight8 = new THREE.SpotLight(0xffffff, 13);
-    SpotLight8.position.set(2,-2, 0);
-    scene.add(SpotLight8);
+    // const SpotLight7 = new THREE.SpotLight(0xffffff, 13);
+    // SpotLight7.position.set(-2,-2, 0);
+    // scene.add(SpotLight7);
+    // const SpotLight8 = new THREE.SpotLight(0xffffff, 13);
+    // SpotLight8.position.set(2,-2, 0);
+    // scene.add(SpotLight8);
 
     
-    const SpotLight9 = new THREE.SpotLight(0xffffff, 10);
-    SpotLight9.position.set(0,0, 4);
-    scene.add(SpotLight9);
-    const SpotLight10 = new THREE.SpotLight(0xffffff, 10);
-    SpotLight10.position.set(0,0, -4);
-    scene.add(SpotLight10);
+    // const SpotLight9 = new THREE.SpotLight(0xffffff, 10);
+    // SpotLight9.position.set(0,0, 4);
+    // scene.add(SpotLight9);
+    // const SpotLight10 = new THREE.SpotLight(0xffffff, 10);
+    // SpotLight10.position.set(0,0, -4);
+    // scene.add(SpotLight10);
 
-    const rectLight = new THREE.RectAreaLight(0xffffff, 5, 2, 2); // (color, intensity, width, height)
-    rectLight.position.set(0, 3, 0); 
-    rectLight.lookAt(0, 0, 0); // Point it at the ring
-    scene.add(rectLight);
+    // const rectLight = new THREE.RectAreaLight(0xffffff, 5, 100, 100); // (color, intensity, width, height)
+    // rectLight.position.set(0, 0, -9); 
+    // rectLight.lookAt(0, 0, 0); 
+    // scene.add(rectLight);
     
     // Price display
     const priceDisplay = document.createElement('div');
@@ -302,17 +313,19 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
         }
                     if (ring)scene.remove(ring)
                         const textureLoader = new THREE.TextureLoader();
-                    const texture = textureLoader.load('dtext.jpg');
-                    const ringtexture=textureLoader.load('goldtext.jpg')
+                    const texture = textureLoader.load('dtext.jpg')
 
                         gltf.scene.traverse((child) => {
                             if (child.isMesh && !child.name.startsWith('Round')) {
                                 child.material = new THREE.MeshStandardMaterial({
                                     color: color,
                                     // map:ringtexture,
-                                    metalness: 1,
+                                    metalness: 5,
                                     roughness: 0.1, 
-                                    flatShading: false
+                                    flatShading: false,
+                                    emissive : color,
+                                    emissiveIntensity : 0.2
+                                    
                                 });
                             }
                             if(child.isMesh && child.name.startsWith('Round')){
@@ -325,6 +338,8 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
                             }
                             
                         });
+                    
+                    gltf.scene.environment = exrTexture;
                     ring=gltf.scene
         scene.add(ring)
 
@@ -500,10 +515,10 @@ function updateRing() {
                         side: THREE.DoubleSide,
                         metalness: 0.5,
                         roughness: 0.5
+                        
                     });
                 }
             });
-
             diamonds.push(gltf.scene);
             scene.add(gltf.scene);
         }, undefined, function (error) {
@@ -632,7 +647,7 @@ function animate() {
     controls.update(); 
     renderer.render(scene, camera);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 2.5; 
+renderer.toneMappingExposure = 4; 
 }
 
 document.addEventListener('DOMContentLoaded', function() {
