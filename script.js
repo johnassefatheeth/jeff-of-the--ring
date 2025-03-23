@@ -526,25 +526,46 @@ function updateRing() {
         });
 
         let progmodel = '';
+        if (prongPave === 'none') {
         if (prongCount == 6 && prongTips == 'rounded') {
-            progmodel = './prongs/6progringholder.glb';
+            progmodel = './prongs/6pronground.glb';
         } 
         else if (prongCount == 6 && prongTips == 'claw') {
-            progmodel = './prongs/6progpointy.glb';
+            progmodel = './prongs/6prongclaw.glb';
                 }
         else if (prongCount==6 && prongTips=='tab'){
-                progmodel='./prongs/6progtab.glb'
+                progmodel='./prongs/6prongtab.glb'
             }
         else if (prongCount==4&&prongTips=='tab'){
-                progmodel='./prongs/4progtab.glb'
+                progmodel='./prongs/4prongtab.glb'
             }
         else if (prongCount == 4 && prongTips == 'claw') {
-            progmodel = './prongs/4progpointy.glb';
+            progmodel = './prongs/4prongclaw.glb';
         } 
-        else {
-            progmodel = './prongs/ringholder.glb';
-        }
-        
+        else if (prongCount == 4 && prongTips == 'rounded') {
+            progmodel = './prongs/4pronground.glb';
+        } 
+    }
+    else{
+        if (prongCount == 6 && prongTips == 'rounded') {
+            progmodel = './prongs/6prongroundpaved.glb';
+        } 
+        else if (prongCount == 6 && prongTips == 'claw') {
+            progmodel = './prongs/6prongclawpaved.glb';
+                }
+        else if (prongCount==6 && prongTips=='tab'){
+                progmodel='./prongs/6prongtabpaved.glb'
+            }
+        else if (prongCount==4&&prongTips=='tab'){
+                progmodel='./prongs/4prongtabpaved.glb'
+            }
+        else if (prongCount == 4 && prongTips == 'claw') {
+            progmodel = './prongs/4prongclawpaved.glb';
+        } 
+        else if (prongCount == 4 && prongTips == 'rounded') {
+            progmodel = './prongs/4prongroundpaved.glb';
+        } 
+    }
 
         loader.load(progmodel, function (gltf) {
                 gltf.scene.scale.set(80, 50, 80);
