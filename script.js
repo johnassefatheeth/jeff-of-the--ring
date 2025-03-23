@@ -528,19 +528,20 @@ function updateRing() {
         let progmodel = '';
         if (prongCount == 6 && prongTips == 'rounded') {
             progmodel = './prongs/6progringholder.glb';
-        } else if (prongCount == 6 && prongTips == 'claw') {
+        } 
+        else if (prongCount == 6 && prongTips == 'claw') {
             progmodel = './prongs/6progpointy.glb';
-}
-
-            else if (prongCount==6 && prongTips=='tab'){
+                }
+        else if (prongCount==6 && prongTips=='tab'){
                 progmodel='./prongs/6progtab.glb'
             }
-            else if (prongCount==4&&prongTips=='tab'){
+        else if (prongCount==4&&prongTips=='tab'){
                 progmodel='./prongs/4progtab.glb'
             }
-         else if (prongCount == 4 && prongTips == 'claw') {
+        else if (prongCount == 4 && prongTips == 'claw') {
             progmodel = './prongs/4progpointy.glb';
-        } else {
+        } 
+        else {
             progmodel = './prongs/ringholder.glb';
         }
         
