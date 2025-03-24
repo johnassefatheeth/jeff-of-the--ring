@@ -1,3 +1,5 @@
+
+
 let scene, camera, renderer, ring, diamonds = [],diamondHolders=[];
 let controls; // Declare controls globally
 let exrTexture;
