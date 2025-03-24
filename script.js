@@ -74,7 +74,7 @@ const prices = {
 init();
 animate();
 const exrLoader = new THREE.EXRLoader();
-exrLoader.load('j.exr', function (texture) {
+exrLoader.load('s.exr', function (texture) {
     texture.mapping = THREE.EquirectangularReflectionMapping;
     texture.mapping = THREE.EquirectangularReflectionMapping;
     texture.encoding = THREE.sRGBEncoding;
@@ -91,7 +91,7 @@ function init() {
     scene.background = texture;
     scene.backgroundIntensity = 4.0;
   });
-    scene.background = new THREE.Color(0xffffff); // White background
+    // scene.background = new THREE.Color(0xffffff); // White background
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 3;
     camera.position.y = 2;
@@ -116,54 +116,26 @@ function init() {
     // scene.add(ring);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 3); 
-    // scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff,0.3); 
+    scene.add(ambientLight);
 
-    // // Add multiple directional lights from different angles
-    // const SpotLight1 = new THREE.SpotLight(0xffffff, 13);
-    // SpotLight1.position.set(5, 2, 2);
-    // scene.add(SpotLight1);
 
-    // const SpotLight2 = new THREE.SpotLight(0xffffff, 13);
-    // SpotLight2.position.set(-2, 2, 2);
-    // scene.add(SpotLight2);
 
-    // const SpotLight3 = new THREE.SpotLight(0xffffff, 13);
-    // SpotLight3.position.set(2, 2, -2);
-    // scene.add(SpotLight3);
-
-    // const SpotLight4 = new THREE.SpotLight(0xffffff, 13);
-    // SpotLight4.position.set(-2, 2, -2);
-    // scene.add(SpotLight4);
-
-    // const SpotLight5 = new THREE.SpotLight(0xffffff, 13);
-    // SpotLight5.position.set(0, 2, 0);
-    // scene.add(SpotLight5);
-
-    // const SpotLight6 = new THREE.SpotLight(0xffffff, 13);
-    // SpotLight6.position.set(0, -2, 0);
-    // scene.add(SpotLight6);
-
-    
-    // const SpotLight7 = new THREE.SpotLight(0xffffff, 13);
-    // SpotLight7.position.set(-2,-2, 0);
-    // scene.add(SpotLight7);
-    // const SpotLight8 = new THREE.SpotLight(0xffffff, 13);
-    // SpotLight8.position.set(2,-2, 0);
-    // scene.add(SpotLight8);
-
-    
-    // const SpotLight9 = new THREE.SpotLight(0xffffff, 10);
-    // SpotLight9.position.set(0,0, 4);
-    // scene.add(SpotLight9);
-    // const SpotLight10 = new THREE.SpotLight(0xffffff, 10);
-    // SpotLight10.position.set(0,0, -4);
-    // scene.add(SpotLight10);
-
-    // const rectLight = new THREE.RectAreaLight(0xffffff, 5, 100, 100); // (color, intensity, width, height)
+    // const rectLight = new THREE.RectAreaLight(0xffffff, 3 ); // (color, intensity, width, height)
     // rectLight.position.set(0, 0, -9); 
     // rectLight.lookAt(0, 0, 0); 
     // scene.add(rectLight);
+    const directionallight=new THREE.DirectionalLight(0xffe584, 2)
+    directionallight.position.set(2, 3, -4)
+    scene.add(directionallight)
+    
+    const directionallight1=new THREE.DirectionalLight(0xffe584, 2)
+    directionallight1.position.set(-2, -3, 4)
+    scene.add(directionallight1)
+    
+    const directionallight2=new THREE.DirectionalLight(0xffe584, 1)
+    directionallight2.position.set(-4, 2, 4)
+    scene.add(directionallight2)
     
     // Price display
     const priceDisplay = document.createElement('div');
@@ -319,12 +291,11 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
                             if (child.isMesh && !child.name.startsWith('Round')) {
                                 child.material = new THREE.MeshStandardMaterial({
                                     color: color,
-                                    // map:ringtexture,
-                                    metalness: 5,
-                                    roughness: 0.1, 
-                                    flatShading: false,
-                                    emissive : color,
-                                    emissiveIntensity : 0.2
+                                    // map:texture,
+                                    metalness: 0.5,
+                                    roughness: 0.1,
+                                    // emissive:color,
+                                    // emissiveIntensity:0.2
                                     
                                 });
                             }
@@ -339,7 +310,7 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
                             
                         });
                     
-                    gltf.scene.environment = exrTexture;
+                    // gltf.scene.environment = exrTexture; 
                     ring=gltf.scene
         scene.add(ring)
 
@@ -364,12 +335,12 @@ function updateRing() {
 
     // Update ring material based on metal selection
     const metalColors = {
-        '14k_yellow_gold': 0xffd700,
+        '14k_yellow_gold': 0xdd8724,
         '14k_white': 0xffffff,
-        '14k_yellow': 0xffd700,
+        '14k_yellow': 0xdd8724,
         '14k_rose': 0xff69b4,
         '18k_white': 0xffffff,
-        '18k_yellow': 0xffd700,
+        '18k_yellow': 0xdd8724,
         '18k_rose': 0xff69b4,
         'platinum': 0xe5e4e2,
         'mixed': 0xcccccc
@@ -468,7 +439,7 @@ function updateRing() {
             
 
             if (diamondCount === 1) {
-                gltf.scene.position.set(x, y, z);
+                gltf.scene.position.set(x, y-0.03, z);
             } else if (diamondCount === 2) {
                 const angle = Math.atan2(x, ringRadius);
                 if(i==0){
@@ -577,12 +548,12 @@ function updateRing() {
                 if (child.isMesh) {
                     child.material = new THREE.MeshStandardMaterial({
                         color: metalColors[metal],
-                        metalness: 1,
-                        roughness: 0.1,
+                        metalness: 0.8,
+                        roughness: 0.3,
                     });
 
                     if (child.name === 'ringcircle' && basketHalo === 'none') {
-                        child.scale.set(0.8, 2, 0.8);
+                        child.scale.set(0);
                     } else if (child.name === 'ringcircle' && basketHalo === 'basket') {
                         // No changes
                     } else if (child.name === 'ringcircle' && basketHalo === 'halo') {
@@ -669,7 +640,7 @@ function animate() {
     controls.update(); 
     renderer.render(scene, camera);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 4; 
+renderer.toneMappingExposure = 2 
 }
 
 document.addEventListener('DOMContentLoaded', function() {
