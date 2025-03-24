@@ -193,84 +193,91 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
     
     const loader = new THREE.GLTFLoader();
     let ringmodel=''
-    if(style === 'square' && paveStyle==='none' && cathedral.value==='none' && (diamondCount==1 ||diamondCount==2||diamondCount==3)) {
-        ringmodel='./new rings/squaredring.glb'
-    }
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==1 && paveLength=='1/2'&& cathedral.value==='none') {
-        ringmodel='./new rings/squared1_2frechpetitering.glb'
-    }
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='1/2'&& cathedral.value==='none') {
-        ringmodel='./new rings/squared1_2frechpetite2stonering.glb'
-    }
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='1/2'&& cathedral.value==='none') {
-        ringmodel='./new rings/squared1_2frechpetite3stonering.glb'
-    }
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='2/3'&& cathedral.value==='none') {
-        ringmodel='./new rings/squared2_3frechpetite3stonering.glb'
-    }
-    
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='2/3'&& cathedral.value==='none') {
-        ringmodel='./new rings/squared2_3frechpetite2stonering.glb'
-    }
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='2/3'&& cathedral.value==='none') {
-        ringmodel='./new rings/squared2_3frechpetite1stonering.glb'
-    }
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='full'&& cathedral.value==='none') {
-        ringmodel='./new rings/squaredfullfrechpetite2stonering.glb'
-    }
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='full'&& cathedral.value==='none') {
-        ringmodel='./new rings/squaredfullfrechpetite1stonering.glb'
-    }
-    else if(style === 'square' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='full'&& cathedral.value==='none') {
-        ringmodel='./new rings/squaredfullfrechpetite3stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='full'&& cathedral.value==='none') {
-        ringmodel='./new rings/roundedfullfrechpetite3stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='full'&& cathedral.value==='none') {
-        ringmodel='./new rings/roundedfullfrechpetite2stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='full'&& cathedral.value==='none') {
-        ringmodel='./new rings/roundedfullfrechpetite1stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='2/3'&& cathedral.value==='none') {
-        ringmodel='./new rings/rounded2_3frechpetite3stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='2/3'&& cathedral.value==='none') {
-        ringmodel='./new rings/rounded2_3frechpetite2stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='2/3'&& cathedral.value==='none') {
-        ringmodel='./new rings/rounded2_3frechpetite1stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==3&& paveLength=='1/2'&& cathedral.value==='none') {
-        ringmodel='./new rings/rounded1_2frechpetite3stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==2&& paveLength=='1/2'&& cathedral.value==='none') {
-        ringmodel='./new rings/rounded1_2frechpetite1stonering.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='1/2'&& cathedral.value==='none') {
-        ringmodel='./new rings/rounded1_2frechpetite1stonering.glb'
-    }
-    
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='1/2'&& cathedral.value==='cathedral') {
-        ringmodel='./new rings/round1prog 1_2frenchpetitcath.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='2/3'&& cathedral.value==='cathedral') {
-        ringmodel='./new rings/round1prog 2_3frenchpetitcath.glb'
-    }
-    else if(style === 'round' &&paveStyle==='petite_french'&&diamondCount==1&& paveLength=='full'&& cathedral.value==='cathedral') {
-        ringmodel='./new rings/round1prog fullfrenchpetitcath.glb'
-    }
-    else if(style === 'round' && paveStyle==='none'&& cathedral.value==='cathedral'&&diamondCount==1) {
-        ringmodel='./new rings/roundcath.glb'
-    }
-    else{
-        ringmodel='./new rings/roundring.glb'
-
-    }
+    const ringModels = {
+        square: {
+          none: {
+            none: {
+              1: './new rings/squaredring.glb',
+              2: './new rings/squaredring.glb',
+              3: './new rings/squaredring.glb'
+            }
+          },
+          petite_french: {
+            none: {
+              '1/2': {
+                1: './new rings/squared1_2frechpetitering.glb',
+                2: './new rings/squared1_2frechpetite2stonering.glb',
+                3: './new rings/squared1_2frechpetite3stonering.glb'
+              },
+              '2/3': {
+                1: './new rings/squared2_3frechpetite1stonering.glb',
+                2: './new rings/squared2_3frechpetite2stonering.glb',
+                3: './new rings/squared2_3frechpetite3stonering.glb'
+              },
+              full: {
+                1: './new rings/squaredfullfrechpetite1stonering.glb',
+                2: './new rings/squaredfullfrechpetite2stonering.glb',
+                3: './new rings/squaredfullfrechpetite3stonering.glb'
+              }
+            }
+          }
+        },
+        round: {
+          petite_french: {
+            none: {
+              '1/2': {
+                1: './new rings/rounded1_2frechpetite1stonering.glb',
+                2: './new rings/rounded1_2frechpetite1stonering.glb',
+                3: './new rings/rounded1_2frechpetite3stonering.glb'
+              },
+              '2/3': {
+                1: './new rings/rounded2_3frechpetite1stonering.glb',
+                2: './new rings/rounded2_3frechpetite2stonering.glb',
+                3: './new rings/rounded2_3frechpetite3stonering.glb'
+              },
+              full: {
+                1: './new rings/roundedfullfrechpetite1stonering.glb',
+                2: './new rings/roundedfullfrechpetite2stonering.glb',
+                3: './new rings/roundedfullfrechpetite3stonering.glb'
+              }
+            },
+            cathedral: {
+              '1/2': {
+                1: './new rings/round1prog 1_2frenchpetitcath.glb'
+              },
+              '2/3': {
+                1: './new rings/round1prog 2_3frenchpetitcath.glb'
+              },
+              full: {
+                1: './new rings/round1prog fullfrenchpetitcath.glb'
+              }
+            }
+          },
+          none: {
+            cathedral: {
+              1: './new rings/roundcath.glb'
+            }
+          }
+        }
+      };
+      
+      ringmodel = './new rings/roundring.glb';
+      try {
+        const model = ringModels[style]?.[paveStyle]?.[cathedral.value]?.[paveLength]?.[diamondCount] || 
+                      ringModels[style]?.[paveStyle]?.[cathedral.value]?.[diamondCount] ||
+                      ringModels[style]?.[paveStyle]?.[cathedral.value]?.[paveLength]?.[diamondCount];
+        
+        if (model) {
+          ringmodel = model;
+        } else if (style === 'square' && paveStyle === 'none' && cathedral.value === 'none' && [1, 2, 3].includes(diamondCount)) {
+          ringmodel = './new rings/squaredring.glb';
+        }
+      } catch (e) {
+        // If any error occurs, keep the default model
+      }
     loader.load(ringmodel, function (gltf) {
         if(style === 'round' && paveStyle==='none'&& cathedral.value==='cathedral') {
-            gltf.scene.scale.set(0.23,0.23,0.23)
+            gltf.scene.scale.set(0.23,0.23,0.13)
     
         }
         else if(style === 'round'&&paveStyle==='none') {
@@ -283,6 +290,8 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
         else if(style === 'square' && paveStyle==='petite_french') {
             gltf.scene.scale.set(3.5,3.5,3.5)
         }
+
+        
                     if (ring)scene.remove(ring)
                         const textureLoader = new THREE.TextureLoader();
                     const texture = textureLoader.load('dtext.jpg')
