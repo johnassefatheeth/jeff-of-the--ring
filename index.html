@@ -5,6 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Ring Builder</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styles for the option buttons */
+        .option-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .option-button {
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .option-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .option-button.selected {
+            background-color: rgb(0, 83, 238);
+            border-color: #5f9ea0;
+            color: #e7e7e7;
+            font-weight: bold;
+        }
+        
+        .input-description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+        
+        /* Range input styling */
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .range-value {
+            min-width: 40px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div id="sidebar">
@@ -20,17 +69,19 @@
             <div class="section-content">
                 <div class="dropdown">
                     <label for="metal">Metal:</label>
-                    <select id="metal">
-                        <option value="14k_yellow_gold">14K Yellow Gold</option>
-                        <option value="14k_white">14K White</option>
-                        <option value="14k_yellow">14K Yellow</option>
-                        <option value="14k_rose">14K Rose</option>
-                        <option value="18k_white">18K White</option>
-                        <option value="18k_yellow">18K Yellow</option>
-                        <option value="18k_rose">18K Rose</option>
-                        <option value="platinum">Platinum</option>
-                        <option value="mixed">Mixed</option>
-                    </select>
+                    <div class="input-description">Select the metal type for your ring</div>
+                    <div class="option-buttons" id="metal-options">
+                        <button class="option-button selected" data-value="14k_yellow_gold">14K Yellow Gold</button>
+                        <button class="option-button" data-value="14k_white">14K White</button>
+                        <button class="option-button" data-value="14k_yellow">14K Yellow</button>
+                        <button class="option-button" data-value="14k_rose">14K Rose</button>
+                        <button class="option-button" data-value="18k_white">18K White</button>
+                        <button class="option-button" data-value="18k_yellow">18K Yellow</button>
+                        <button class="option-button" data-value="18k_rose">18K Rose</button>
+                        <button class="option-button" data-value="platinum">Platinum</button>
+                        <button class="option-button" data-value="mixed">Mixed</button>
+                    </div>
+                    <input type="hidden" id="metal" value="14k_yellow_gold">
                 </div>
             </div>
         </div>
@@ -44,29 +95,35 @@
             <div class="section-content">
                 <div class="dropdown">
                     <label for="band_style">Band Style:</label>
-                    <select id="band_style">
-                        <option value="round">Round</option>
-                        <option value="square">Square</option>
-                    </select>
+                    <div class="input-description">Choose the style of your ring's band</div>
+                    <div class="option-buttons" id="band_style-options">
+                        <button class="option-button selected" data-value="round">Round</button>
+                        <button class="option-button" data-value="square">Square</button>
+                    </div>
+                    <input type="hidden" id="band_style" value="round">
                 </div>
                 <div class="dropdown">
                     <label for="center_stone">Center Stone:</label>
-                    <select id="center_stone">
-                        <option value="one_stone_solitaire">One Stone Ring (Solitaire)</option>
-                        <option value="one_stone">One Stone</option>
-                        <option value="two_stone">Two Stone</option>
-                        <option default value="three_stone">Three Stone</option>
-                    </select>
+                    <div class="input-description">Select the number of center stones</div>
+                    <div class="option-buttons" id="center_stone-options">
+                        <button class="option-button" data-value="one_stone_solitaire">Solitaire</button>
+                        <button class="option-button" data-value="one_stone">One Stone</button>
+                        <button class="option-button" data-value="two_stone">Two Stone</button>
+                        <button class="option-button selected" data-value="three_stone">Three Stone</button>
+                    </div>
+                    <input type="hidden" id="center_stone" value="three_stone">
                 </div>
                 <div class="dropdown">
                     <label for="basket_halo">Basket & Halo:</label>
-                    <select id="basket_halo">
-                        <option value="none">None</option>
-                        <option value="basket">Basket</option>
-                        <option value="halo">Halo</option>
-                        <option value="bezel">Bezel</option>
-                        <option value="hidden_halo">Hidden Halo</option>
-                    </select>
+                    <div class="input-description">Choose basket or halo style</div>
+                    <div class="option-buttons" id="basket_halo-options">
+                        <button class="option-button selected" data-value="none">None</button>
+                        <button class="option-button" data-value="basket">Basket</button>
+                        <button class="option-button" data-value="halo">Halo</button>
+                        <button class="option-button" data-value="bezel">Bezel</button>
+                        <button class="option-button" data-value="hidden_halo">Hidden Halo</button>
+                    </div>
+                    <input type="hidden" id="basket_halo" value="none">
                 </div>
             </div>
         </div>
@@ -80,35 +137,53 @@
             <div class="section-content">
                 <div class="dropdown">
                     <label for="diamond_type">Diamond Type:</label>
-                    <select id="diamond_type">
-                        <option value="natural">Natural</option>
-                        <option value="lab_grown">Lab Grown</option>
-                        <option value="skip">Skip</option>
-                    </select>
+                    <div class="input-description">Choose between natural or lab-grown diamonds</div>
+                    <div class="option-buttons" id="diamond_type-options">
+                        <button class="option-button selected" data-value="natural">Natural</button>
+                        <button class="option-button" data-value="lab_grown">Lab Grown</button>
+                        <button class="option-button" data-value="skip">Skip</button>
+                    </div>
+                    <input type="hidden" id="diamond_type" value="natural">
                 </div>
-                <div>left</div>
-                <div>right</div>
-                <div>center</div>
-                <div>side</div>
                 
-        <div>stone elevation</div>
+                <div class="dropdown">
+                    <label>Stone Position:</label>
+                    <div class="input-description">Adjust the position of stones</div>
+                    <div class="option-buttons" id="stone_position-options">
+                        <button class="option-button" data-value="left">Left</button>
+                        <button class="option-button" data-value="right">Right</button>
+                        <button class="option-button selected" data-value="center">Center</button>
+                        <button class="option-button" data-value="side">Side</button>
+                    </div>
+                </div>
+                
+                <div class="dropdown">
+                    <label for="stone_elevation">Stone Elevation:</label>
+                    <div class="input-description">Adjust how high the stones sit on the ring (1-10)</div>
+                    <div class="range-container">
+                        <input type="range" id="stone_elevation" min="1" max="10" step="1" value="5">
+                        <span class="range-value" id="stone_elevation_value">5</span>
+                    </div>
+                </div>
+                
                 <div class="dropdown">
                     <label for="stoneshape">Stone Shape:</label>
-                    <select id="stoneshape">
-                        <option value="round">Round</option>
-                        <option value="oval">Oval</option>
-                        <option value="princess">Princess</option>
-                        <option value="emerald">Emerald</option>
-                        <option value="cushion">Cushion</option>
-                        <option value="radient">Radiant</option>
-                        <option value="pear">Pear</option>
-                        <option value="marquise">Marquise</option>
-                        <option value="ascher">Asscher</option>
-                    </select>
+                    <div class="input-description">Select the shape of your diamonds</div>
+                    <div class="option-buttons" id="stoneshape-options">
+                        <button class="option-button selected" data-value="round">Round</button>
+                        <button class="option-button" data-value="oval">Oval</button>
+                        <button class="option-button" data-value="princess">Princess</button>
+                        <button class="option-button" data-value="emerald">Emerald</button>
+                        <button class="option-button" data-value="cushion">Cushion</button>
+                        <button class="option-button" data-value="radient">Radiant</button>
+                        <button class="option-button" data-value="pear">Pear</button>
+                        <button class="option-button" data-value="marquise">Marquise</button>
+                        <button class="option-button" data-value="ascher">Asscher</button>
+                    </div>
+                    <input type="hidden" id="stoneshape" value="round">
                 </div>
             </div>
         </div>
-
 
         <!-- Band Section -->
         <div class="section">
@@ -119,55 +194,85 @@
             <div class="section-content">
                 <div class="dropdown">
                     <label for="prong_count">Prong Count:</label>
-                    <select id="prong_count">
-                        <option value="4">4 Prong Classic Setting</option>
-                        <option value="4_compass">4 Compass</option>
-                        <option value="6">6 Prong</option>
-                    </select>
+                    <div class="input-description">Select the number and style of prongs</div>
+                    <div class="option-buttons" id="prong_count-options">
+                        <button class="option-button selected" data-value="4">4 Prong</button>
+                        <button class="option-button" data-value="4_compass">4 Compass</button>
+                        <button class="option-button" data-value="6">6 Prong</button>
+                    </div>
+                    <input type="hidden" id="prong_count" value="4">
                 </div>
                 <div class="dropdown">
                     <label for="prong_tips">Prong Tips:</label>
-                    <select id="prong_tips">
-                        <option value="rounded">Rounded</option>
-                        <option value="claw">Claw</option>
-                        <option value="petite_claw">Petite Claw</option>
-                        <option value="tab">Tab</option>
-                    </select>
+                    <div class="input-description">Choose the style of prong tips</div>
+                    <div class="option-buttons" id="prong_tips-options">
+                        <button class="option-button selected" data-value="rounded">Rounded</button>
+                        <button class="option-button" data-value="claw">Claw</button>
+                        <button class="option-button" data-value="petite_claw">Petite Claw</button>
+                        <button class="option-button" data-value="tab">Tab</button>
+                    </div>
+                    <input type="hidden" id="prong_tips" value="rounded">
                 </div>
                 <div class="dropdown">
                     <label for="prong_pave">Prong Pave:</label>
-                    <select id="prong_pave">
-                        <option value="none">None</option>
-                        <option value="pave">Pave</option>
-                    </select>
+                    <div class="input-description">Add pave details to the prongs</div>
+                    <div class="option-buttons" id="prong_pave-options">
+                        <button class="option-button selected" data-value="none">None</button>
+                        <button class="option-button" data-value="pave">Pave</button>
+                    </div>
+                    <input type="hidden" id="prong_pave" value="none">
                 </div>
                 <div class="dropdown">
                     <label for="cathedral">Cathedral:</label>
-                    <select id="cathedral">
-                        <option value="none">None</option>
-                        <option value="cathedral">Cathedral</option>
-                    </select>
+                    <div class="input-description">Add cathedral style to the band</div>
+                    <div class="option-buttons" id="cathedral-options">
+                        <button class="option-button selected" data-value="none">None</button>
+                        <button class="option-button" data-value="cathedral">Cathedral</button>
+                    </div>
+                    <input type="hidden" id="cathedral" value="none">
                 </div>
                 <div class="dropdown">
                     <label for="pave_style">Pave Style:</label>
-                    <select id="pave_style">
-                        <option value="none">None</option>
-                        <option value="petite_french">Petite French</option>
-                    </select>
+                    <div class="input-description">Select the pave style for the band</div>
+                    <div class="option-buttons" id="pave_style-options">
+                        <button class="option-button selected" data-value="none">None</button>
+                        <button class="option-button" data-value="petite_french">Petite French</button>
+                    </div>
+                    <input type="hidden" id="pave_style" value="none">
                 </div>
                 <div class="dropdown">
-                    <label for="pave_style">Pave Length:</label>
-                    <select id="pave_length">
-                        <option value="1/2">Half</option>
-                        <option value="2/3">Three Quarters</option>
-                        <option value="full">Eternity</option>
-                    </select>
+                    <label for="pave_length">Pave Length:</label>
+                    <div class="input-description">Choose how much of the band has pave</div>
+                    <div class="option-buttons" id="pave_length-options">
+                        <button class="option-button selected" data-value="1/2">Half</button>
+                        <button class="option-button" data-value="2/3">Three Quarters</button>
+                        <button class="option-button" data-value="full">Eternity</button>
+                    </div>
+                    <input type="hidden" id="pave_length" value="1/2">
                 </div>
-                <div>fit</div>
-                <div>ring size</div>
+                <div class="dropdown">
+                    <label for="fit">Fit:</label>
+                    <div class="input-description">Adjust how the ring fits on the finger (1-5)</div>
+                    <div class="range-container">
+                        <input type="range" id="fit" min="1" max="5" step="1" value="3">
+                        <span class="range-value" id="fit_value">3</span>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <label for="ring_size">Ring Size:</label>
+                    <div class="input-description">Select your ring size (US standard 4-12)</div>
+                    <div class="range-container">
+                        <input type="range" id="ring_size" min="4" max="12" step="0.5" value="7">
+                        <span class="range-value" id="ring_size_value">7</span>
+                    </div>
+                </div>
                 <div class="dropdown">
                     <label for="band_width">Band Width:</label>
-                    <input type="range" id="band_width" min="1.5" max="2.5" step="0.1" value="1.7">
+                    <div class="input-description">Adjust the width of the band (1.5mm to 2.5mm)</div>
+                    <div class="range-container">
+                        <input type="range" id="band_width" min="1.5" max="2.5" step="0.1" value="1.7">
+                        <span class="range-value" id="band_width_value">1.7 mm</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -181,12 +286,14 @@
             <div class="section-content">
                 <div class="dropdown">
                     <label for="engraving">Engraving:</label>
-                    <select id="engraving">
-                        <option value="none">None</option>
-                        <option value="block">Block</option>
-                        <option value="cursive">Cursive</option>
-                        <option value="surprise_stones">Surprise Stones</option>
-                    </select>
+                    <div class="input-description">Add personalized engraving to your ring</div>
+                    <div class="option-buttons" id="engraving-options">
+                        <button class="option-button selected" data-value="none">None</button>
+                        <button class="option-button" data-value="block">Block</button>
+                        <button class="option-button" data-value="cursive">Cursive</button>
+                        <button class="option-button" data-value="surprise_stones">Surprise Stones</button>
+                    </div>
+                    <input type="hidden" id="engraving" value="none">
                 </div>
             </div>
         </div>
@@ -201,5 +308,52 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/EXRLoader.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Initialize option buttons functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle option button selection
+            document.querySelectorAll('.option-buttons').forEach(buttonGroup => {
+                buttonGroup.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('option-button')) {
+                        // Remove selected class from all buttons in this group
+                        buttonGroup.querySelectorAll('.option-button').forEach(btn => {
+                            btn.classList.remove('selected');
+                        });
+                        
+                        // Add selected class to clicked button
+                        e.target.classList.add('selected');
+                        
+                        // Update the corresponding hidden input
+                        const inputId = buttonGroup.id.replace('-options', '');
+                        const inputElement = document.getElementById(inputId);
+                        if (inputElement) {
+                            inputElement.value = e.target.dataset.value;
+                            
+                            // Trigger change event for the hidden input
+                            const event = new Event('change');
+                            inputElement.dispatchEvent(event);
+                        }
+                    }
+                });
+            });
+            
+            // Update range value displays
+            document.getElementById('stone_elevation').addEventListener('input', function() {
+                document.getElementById('stone_elevation_value').textContent = this.value;
+            });
+            
+            document.getElementById('fit').addEventListener('input', function() {
+                document.getElementById('fit_value').textContent = this.value;
+            });
+            
+            document.getElementById('ring_size').addEventListener('input', function() {
+                document.getElementById('ring_size_value').textContent = this.value;
+            });
+            
+            document.getElementById('band_width').addEventListener('input', function() {
+                document.getElementById('band_width_value').textContent = this.value + ' mm';
+            });
+        });
+    </script>
 </body>
 </html>

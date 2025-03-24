@@ -73,15 +73,15 @@ const prices = {
 
 init();
 animate();
-const exrLoader = new THREE.EXRLoader();
-exrLoader.load('s.exr', function (texture) {
-    texture.mapping = THREE.EquirectangularReflectionMapping;
-    texture.mapping = THREE.EquirectangularReflectionMapping;
-    texture.encoding = THREE.sRGBEncoding;
-    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    scene.environment = texture; 
-    exrTexture = texture;
-});
+// const exrLoader = new THREE.EXRLoader();
+// exrLoader.load('s.exr', function (texture) {
+//     texture.mapping = THREE.EquirectangularReflectionMapping;
+//     texture.mapping = THREE.EquirectangularReflectionMapping;
+//     texture.encoding = THREE.sRGBEncoding;
+//     texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+//     scene.environment = texture; 
+//     exrTexture = texture;
+// });
 
 function init() {
     // Scene setup
@@ -290,6 +290,12 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
         else if(style === 'square' && paveStyle==='petite_french') {
             gltf.scene.scale.set(3.5,3.5,3.5)
         }
+        else if(style === 'round' && paveStyle==='petite_french') {
+            gltf.scene.scale.set(0.0185,0.0185,0.0185)
+        }
+        else if(style === 'round' && paveStyle==='petite_french'&& cathedral.value==='cathedral') {
+            gltf.scene.scale.set(0.0185,0.0185,0.0185)
+        }
 
         
                     if (ring)scene.remove(ring)
@@ -313,7 +319,8 @@ function createRingGeometry(style, color,paveStyle,diamondCount,paveLength) {
                                     map: texture,
                                     metalness: 0.5,
                                     roughness: 0.5, 
-                                    flatShading: false
+                                    flatShading: false,
+                                    scale: 0.5
                                 });
                             }
                             
@@ -566,15 +573,19 @@ function updateRing() {
                     } else if (child.name === 'ringcircle' && basketHalo === 'basket') {
                         // No changes
                     } else if (child.name === 'ringcircle' && basketHalo === 'halo') {
-                        child.position.set(0, 0.6, 0);
+                        child.scale.set(0.88, 1,0.88);
                     } else if (child.name === 'ringcircle' && basketHalo === 'bezel') {
                         child.scale.set(1.1, 1.1, 1.1);
                     } else if (child.name === 'ringcircle' && basketHalo === 'hidden_halo') {
                         child.scale.set(1.1, 1.1, 1.1);
+                        child.transform.position.set(0,1,0)
                     }
 
                     child.material.needsUpdate = true;
                 }
+            });
+            gltf.scene.traverse((child) => {
+                
             });
 
             if (diamondCount === 1) {
